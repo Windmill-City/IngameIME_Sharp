@@ -2,6 +2,8 @@
 
 namespace ImeSharp
 {
+    public delegate void CandidateListHandler(CandidateList list);
+
     public delegate void UpdateCompStrHandler(string comp);
 
     public delegate void UpdateCompSelHandler(int acpStart, int acpEnd);
@@ -12,6 +14,8 @@ namespace ImeSharp
 
     public interface IIMEControl
     {
+        event CandidateListHandler CandidateListEvent;
+
         event UpdateCompSelHandler CompSelEvent;
 
         event UpdateCompStrHandler CompStrEvent;
@@ -19,6 +23,16 @@ namespace ImeSharp
         event CommitHandler CommitEvent;
 
         event GetCompExtHandler GetCompExtEvent;
+
+        void onCandidateList(CandidateList list);
+
+        void onCompSel(int acpStart, int acpEnd);
+
+        void onCompStr(string comp);
+
+        void onCommit(string commit);
+
+        void onGetCompExt(ref TextStorLib.tagRECT rECT);
 
         void Initialize(IntPtr handle, bool isUIElementOnly = false);
 

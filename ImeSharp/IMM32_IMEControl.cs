@@ -12,6 +12,8 @@ namespace ImeSharp
 
         public event GetCompExtHandler GetCompExtEvent;
 
+        public event CandidateListHandler CandidateListEvent;
+
         public void DisableIME()
         {
             throw new NotImplementedException();
@@ -26,5 +28,34 @@ namespace ImeSharp
         {
             throw new NotImplementedException();
         }
+
+        #region EventRaiser
+
+        public void onCandidateList(CandidateList list)
+        {
+            CandidateListEvent.Invoke(list);
+        }
+
+        public void onCompSel(int acpStart, int acpEnd)
+        {
+            CompSelEvent(acpStart, acpEnd);
+        }
+
+        public void onCompStr(string comp)
+        {
+            CompStrEvent(comp);
+        }
+
+        public void onCommit(string commit)
+        {
+            CommitEvent(commit);
+        }
+
+        public void onGetCompExt(ref TextStorLib.tagRECT rECT)
+        {
+            GetCompExtEvent(ref rECT);
+        }
+
+        #endregion EventRaiser
     }
 }
