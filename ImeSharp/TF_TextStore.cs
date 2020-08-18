@@ -69,7 +69,7 @@ namespace ImeSharp
             tF_IMEControl = iMEControl;
         }
 
-        public void AdviseSink(GUID riid, object punk, uint dwMask)
+        public void AdviseSink(ref GUID riid, object punk, uint dwMask)
         {
             punk = punk as IUnknown;
             //see if this advise sink already exists
@@ -399,32 +399,30 @@ namespace ImeSharp
             SetSelection(1, ref tsa);
 
             //call InsertTextAtSelection
-            int _acpStart = 0;
-            int _acpEnd = 0;
-            InsertTextAtSelection(TextStor.TS_IAS_NOQUERY, ref pchText, cch, ref _acpStart, ref _acpEnd, ref pChange);
+            InsertTextAtSelection(TextStor.TS_IAS_NOQUERY, ref pchText, cch, out _, out _, ref pChange);
         }
 
-        public void GetFormattedText(int acpStart, int acpEnd, ref IDataObject ppDataObject)
+        public void GetFormattedText(int acpStart, int acpEnd, out IDataObject ppDataObject)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void GetEmbedded(int acpPos, GUID rguidService, GUID riid, ref object ppunk)
+        public void GetEmbedded(int acpPos, ref GUID rguidService, ref GUID riid, out object ppunk)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void QueryInsertEmbedded(GUID pguidService, ref tagFORMATETC pformatetc, ref bool pfInsertable)
+        public void QueryInsertEmbedded(ref GUID pguidService, ref tagFORMATETC pformatetc, out bool pfInsertable)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void InsertEmbedded(uint dwFlags, int acpStart, int acpEnd, IDataObject pDataObject, ref TS_TEXTCHANGE pChange)
+        public void InsertEmbedded(uint dwFlags, int acpStart, int acpEnd, IDataObject pDataObject, out TS_TEXTCHANGE pChange)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void InsertTextAtSelection(uint dwFlags, ref char[] pchText, uint cch, ref int pacpStart, ref int pacpEnd, ref TS_TEXTCHANGE pChange)
+        public void InsertTextAtSelection(uint dwFlags, ref char[] pchText, uint cch, out int pacpStart, out int pacpEnd, ref TS_TEXTCHANGE pChange)
         {
             int lTemp = 0;
 
@@ -480,7 +478,7 @@ namespace ImeSharp
             m_fLayoutChanged = true;
         }
 
-        public void InsertEmbeddedAtSelection(uint dwFlags, IDataObject pDataObject, ref int pacpStart, ref int pacpEnd, ref TS_TEXTCHANGE pChange)
+        public void InsertEmbeddedAtSelection(uint dwFlags, IDataObject pDataObject, out int pacpStart, out int pacpEnd, out TS_TEXTCHANGE pChange)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
@@ -500,7 +498,7 @@ namespace ImeSharp
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void FindNextAttrTransition(int acpStart, int acpHalt, uint cFilterAttrs, ref TS_ATTRID paFilterAttrs, uint dwFlags, ref int pacpNext, ref bool pfFound, ref int plFoundOffset)
+        public void FindNextAttrTransition(int acpStart, int acpHalt, uint cFilterAttrs, ref TS_ATTRID paFilterAttrs, uint dwFlags, out int pacpNext, out bool pfFound, out int plFoundOffset)
         {
             ///Note  If an application does not implement ITextStoreACP::FindNextAttrTransition, ITfReadOnlyProperty::EnumRanges fails with E_FAIL.
             // We don't support any attributes.
@@ -510,12 +508,12 @@ namespace ImeSharp
             plFoundOffset = 0;
         }
 
-        public void RetrieveRequestedAttrs(uint ulCount, ref TS_ATTRVAL paAttrVals, ref uint pcFetched)
+        public void RetrieveRequestedAttrs(uint ulCount, out TS_ATTRVAL paAttrVals, out uint pcFetched)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void GetEndACP(ref int pacp)
+        public void GetEndACP(out int pacp)
         {
             //does the caller have a lock
             if (!_IsLocked(TextStor.TS_LF_READ))
@@ -527,12 +525,12 @@ namespace ImeSharp
             pacp = m_StoredStr.Length;
         }
 
-        public void GetActiveView(ref uint pvcView)
+        public void GetActiveView(out uint pvcView)
         {
             pvcView = 0;//only one view
         }
 
-        public void GetACPFromPoint(uint vcView, ref tagPOINT ptScreen, uint dwFlags, ref int pacp)
+        public void GetACPFromPoint(uint vcView, ref tagPOINT ptScreen, uint dwFlags, out int pacp)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }

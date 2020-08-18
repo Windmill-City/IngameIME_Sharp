@@ -38,7 +38,7 @@ namespace ImeSharp
         {
             msctf.TF_CreateThreadMgr(out _tfThreadMgr);
             (_tfThreadMgr as ITfThreadMgrEx).ActivateEx(out _tfClientId, isUIElementOnly ?
-                msctf.TF_TMF_UIELEMENTENABLEDONLY : msctf.TF_TMF_ACTIVATED);
+                msctf.TF_TMF_UIELEMENTENABLEDONLY : 0u);
 
             //Document
             _tfThreadMgr.CreateDocumentMgr(out _tfDocumentMgr);
@@ -46,7 +46,7 @@ namespace ImeSharp
 
             //Context
             _tfTextStore = new TF_TextStore(this);
-            _tfDocumentMgr.CreateContext(_tfClientId, 0, _tfTextStore, out _tfContext, out _ecReadOnly);
+            _tfDocumentMgr.CreateContext(_tfClientId, 0, (IntPtr)0, out _tfContext, out _ecReadOnly);
 
             _tfTextEditSink = new TF_TextEditSink(_tfContext, _tfTextStore);
         }
