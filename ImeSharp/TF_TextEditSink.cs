@@ -6,8 +6,8 @@ namespace ImeSharp
 {
     public class TF_TextEditSink : ITfTextEditSink
     {
-        public static readonly GUID IID_ITfTextEditSink = new GUID(0x8127d409, 0xccd3, 0x4683, 0x96, 0x7a, 0xb4, 0x3d, 0x5b, 0x48, 0x2b, 0xf7);
-        public static readonly GUID GUID_PROP_COMPOSING = new GUID(0xe12ac060, 0xaf15, 0x11d2, 0xaf, 0xc5, 0x00, 0x10, 0x5a, 0x27, 0x99, 0xb5);
+        public static readonly GUID IID_ITfTextEditSink = msctf.CreateGUID(0x8127d409, 0xccd3, 0x4683, 0x96, 0x7a, 0xb4, 0x3d, 0x5b, 0x48, 0x2b, 0xf7);
+        public static readonly GUID GUID_PROP_COMPOSING = msctf.CreateGUID(0xe12ac060, 0xaf15, 0x11d2, 0xaf, 0xc5, 0x00, 0x10, 0x5a, 0x27, 0x99, 0xb5);
 
         private ITfContext m_ctx;
         private TF_TextStore m_textStore;
@@ -77,7 +77,7 @@ namespace ImeSharp
                 EnumPropValue.Next(1, out PropValue, out cFetched);
                 while (cFetched != 0)
                 {
-                    if (PropValue.guidId == GUID_PROP_COMPOSING)
+                    if (msctf.IsEqualGUID(PropValue.guidId, GUID_PROP_COMPOSING))
                     {
                         IsComposing = (bool)PropValue.varValue == true;
                         break;

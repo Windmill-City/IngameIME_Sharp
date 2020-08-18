@@ -26,20 +26,29 @@ namespace ImeSharp
         private ITfDocumentMgr _tfDocumentMgr;
         private ITfContext _tfContext;
         private uint _tfClientId;
+        private TF_TextStore _tfTextStore;
+        private TF_TextEditSink _tfTextEditSink;
         private bool _isIMEEnabled;
 
         #endregion Private
 
-        public uint _ecReadOnly;
+        public uint _ecReadOnly = msctf.TF_INVALID_COOKIE;
 
         public void Initialize(IntPtr handle, bool isUIElementOnly = false)
         {
             msctf.TF_CreateThreadMgr(out _tfThreadMgr);
             (_tfThreadMgr as ITfThreadMgrEx).ActivateEx(out _tfClientId, isUIElementOnly ?
                 msctf.TF_TMF_UIELEMENTENABLEDONLY : msctf.TF_TMF_ACTIVATED);
+
+            //Document
             _tfThreadMgr.CreateDocumentMgr(out _tfDocumentMgr);
             _tfThreadMgr.AssociateFocus(ref handle, _tfDocumentMgr, out _);
-            _tfDocumentMgr.CreateContext(_tfClientId, 0, null, out _tfContext, out _ecReadOnly);
+
+            //Context
+            _tfTextStore = new TF_TextStore(this);
+            _tfDocumentMgr.CreateContext(_tfClientId, 0, _tfTextStore, out _tfContext, out _ecReadOnly);
+
+            _tfTextEditSink = new TF_TextEditSink(_tfContext, _tfTextStore);
         }
 
         public bool isIMEEnabled()

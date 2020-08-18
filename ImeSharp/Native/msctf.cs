@@ -1,3 +1,4 @@
+using msctfLib;
 using System;
 using System.Runtime.InteropServices;
 
@@ -165,5 +166,24 @@ namespace ImeSharp.Native
         public const uint TF_INVALID_COOKIE = 0xffffffff;
 
         #endregion Constants
+
+        #region Utils
+
+        public static GUID CreateGUID(uint a, ushort b, ushort c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
+        {
+            GUID gUID = new GUID();
+            gUID.Data1 = a;
+            gUID.Data2 = b;
+            gUID.Data3 = c;
+            gUID.Data4 = new byte[] { d, e, f, g, h, i, j, k };
+            return gUID;
+        }
+
+        public static bool IsEqualGUID(GUID gUID1, GUID gUID2)
+        {
+            return gUID1.Data1 == gUID2.Data1 && gUID1.Data2 == gUID2.Data2 && gUID1.Data3 == gUID2.Data3 && gUID1.Data4 == gUID2.Data4;
+        }
+
+        #endregion Utils
     }
 }
