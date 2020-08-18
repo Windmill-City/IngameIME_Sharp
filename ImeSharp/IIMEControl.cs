@@ -24,6 +24,8 @@ namespace ImeSharp
 
         event GetCompExtHandler GetCompExtEvent;
 
+        #region Event Raiser
+
         void onCandidateList(CandidateList list);
 
         void onCompSel(int acpStart, int acpEnd);
@@ -34,7 +36,11 @@ namespace ImeSharp
 
         void onGetCompExt(ref TextStorLib.tagRECT rECT);
 
+        #endregion Event Raiser
+
         void Initialize(IntPtr handle, bool isUIElementOnly = false);
+
+        bool isIMEEnabled();
 
         void EnableIME();
 

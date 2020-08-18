@@ -14,19 +14,21 @@ namespace ImeSharp
 
         public event CandidateListHandler CandidateListEvent;
 
+        public void Initialize(IntPtr handle, bool isUIElementOnly = false)
+        {
+        }
+
+        public bool isIMEEnabled()
+        {
+            return false;
+        }
+
         public void DisableIME()
         {
-            throw new NotImplementedException();
         }
 
         public void EnableIME()
         {
-            throw new NotImplementedException();
-        }
-
-        public void Initialize(IntPtr handle, bool isUIElementOnly = false)
-        {
-            throw new NotImplementedException();
         }
 
         #region EventRaiser

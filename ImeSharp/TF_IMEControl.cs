@@ -26,22 +26,11 @@ namespace ImeSharp
         private ITfDocumentMgr _tfDocumentMgr;
         private ITfContext _tfContext;
         private uint _tfClientId;
+        private bool _isIMEEnabled;
 
         #endregion Private
 
         public uint _ecReadOnly;
-
-        public bool isIMEEnabled;
-
-        public void DisableIME()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EnableIME()
-        {
-            throw new NotImplementedException();
-        }
 
         public void Initialize(IntPtr handle, bool isUIElementOnly = false)
         {
@@ -51,6 +40,19 @@ namespace ImeSharp
             _tfThreadMgr.CreateDocumentMgr(out _tfDocumentMgr);
             _tfThreadMgr.AssociateFocus(ref handle, _tfDocumentMgr, out _);
             _tfDocumentMgr.CreateContext(_tfClientId, 0, null, out _tfContext, out _ecReadOnly);
+        }
+
+        public bool isIMEEnabled()
+        {
+            return _isIMEEnabled;
+        }
+
+        public void DisableIME()
+        {
+        }
+
+        public void EnableIME()
+        {
         }
 
         #region EventRaiser

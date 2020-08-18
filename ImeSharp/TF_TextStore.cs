@@ -69,7 +69,7 @@ namespace ImeSharp
             tF_IMEControl = iMEControl;
         }
 
-        public void AdviseSink(ref GUID riid, object punk, uint dwMask)
+        public void AdviseSink(GUID riid, object punk, uint dwMask)
         {
             punk = punk as IUnknown;
             //see if this advise sink already exists
@@ -409,12 +409,12 @@ namespace ImeSharp
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void GetEmbedded(int acpPos, ref GUID rguidService, ref GUID riid, ref object ppunk)
+        public void GetEmbedded(int acpPos, GUID rguidService, GUID riid, ref object ppunk)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
 
-        public void QueryInsertEmbedded(ref GUID pguidService, ref tagFORMATETC pformatetc, ref bool pfInsertable)
+        public void QueryInsertEmbedded(GUID pguidService, ref tagFORMATETC pformatetc, ref bool pfInsertable)
         {
             throw new COMException("NOT IMPL", HResult.E_NOTIMPL);
         }
@@ -555,6 +555,8 @@ namespace ImeSharp
             //	return E_INVALIDARG;
             //}
 
+            //Post Event
+            tF_IMEControl.onGetCompExt(ref prc);
             Win32.MapWindowPoints(m_hWnd, (IntPtr)0, ref prc, 2);
         }
 
@@ -595,7 +597,9 @@ namespace ImeSharp
                 {
                     m_Commit = false;
                     int commitLen = m_CommitEnd - m_CommitStart;
-                    //m_sigCommitStr(this, m_StoredStr.substr(m_CommitStart, commitLen));
+                    //Post event
+                    tF_IMEControl.onCommit(m_StoredStr.Substring(m_CommitStart, commitLen));
+
                     m_StoredStr.Remove(m_CommitStart, commitLen);
                     TS_TEXTCHANGE textChange;
                     textChange.acpStart = m_CommitStart;
@@ -609,13 +613,13 @@ namespace ImeSharp
 
                 if (m_Composing)
                 {
-                    //m_sigUpdateCompStr(this, m_StoredStr.substr(m_CompStart, m_CompEnd - m_CompStart));
-                    //m_sigUpdateCompSel(this, m_acpStart, m_acpEnd);
+                    tF_IMEControl.onCompStr(m_StoredStr.Substring(m_CompStart, m_CompEnd - m_CompStart));
+                    tF_IMEControl.onCompSel(m_acpStart, m_acpEnd);
                 }
                 else
                 {
-                    //m_sigUpdateCompStr(this, "");
-                    //m_sigUpdateCompSel(this, 0, 0);
+                    tF_IMEControl.onCompStr("");
+                    tF_IMEControl.onCompSel(0, 0);
                 }
             }
 
@@ -630,7 +634,7 @@ namespace ImeSharp
             if (m_fLayoutChanged)
             {
                 m_fLayoutChanged = false;
-                //m_AdviseSink.pTextStoreACPSink->OnLayoutChange(, EDIT_VIEW_COOKIE);
+                m_AdviseSink.pTextStoreACPSink.OnLayoutChange(TsLayoutCode.TS_LC_CHANGE, 0);
             }
         }
 

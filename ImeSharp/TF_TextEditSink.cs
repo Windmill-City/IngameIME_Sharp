@@ -61,15 +61,15 @@ namespace ImeSharp
                 Ranges.Next(1, out Range, out cFetched);
                 if (cFetched == 0)
                     break;
-                VARIANT var;
-                VariantInit(out var);
+                object var;
+                Ole.VariantInit(out var);
                 IEnumTfPropertyValue EnumPropValue;
 
                 TrackProperty.GetValue(ecReadOnly, Range, out var);
 
-                EnumPropValue = var.punkVal as IEnumTfPropertyValue;
+                EnumPropValue = var as IEnumTfPropertyValue;
 
-                VariantClear(out var);
+                Ole.VariantClear(out var);
 
                 TF_PROPERTYVAL PropValue;
                 bool IsComposing = false;
@@ -79,10 +79,10 @@ namespace ImeSharp
                 {
                     if (PropValue.guidId == GUID_PROP_COMPOSING)
                     {
-                        IsComposing = PropValue.varValue.lVal == true;
+                        IsComposing = (bool)PropValue.varValue == true;
                         break;
                     }
-                    VariantClear(PropValue.varValue);
+                    Ole.VariantClear(out PropValue.varValue);
                 }
 
                 ITfRangeACP RangeACP;
