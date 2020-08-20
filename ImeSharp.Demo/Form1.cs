@@ -18,8 +18,8 @@ namespace ImeSharp.Demo
             InitializeComponent();
             KeyDown += Form1_KeyDown;
 
-            //iMEControl = ImeSharp.GetDefaultControl();
-            iMEControl = ImeSharp.Get_IMM32Control();
+            iMEControl = ImeSharp.GetDefaultControl();
+            //iMEControl = ImeSharp.Get_IMM32Control();
             iMEControl.Initialize(Handle);
             iMEControl.EnableIME();
             iMEControl.CompStrEvent += IMEControl_CompStrEvent;

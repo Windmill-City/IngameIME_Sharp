@@ -278,27 +278,27 @@ namespace ImeSharp
 
         public void onCandidateList(CandidateList list)
         {
-            CandidateListEvent.Invoke(list);
+            CandidateListEvent?.Invoke(list);
         }
 
         public void onCompSel(int acpStart, int acpEnd)
         {
-            CompSelEvent(acpStart, acpEnd);
+            CompSelEvent?.Invoke(acpStart, acpEnd);
         }
 
         public void onCompStr(string comp)
         {
-            CompStrEvent(comp);
+            CompStrEvent?.Invoke(comp);
         }
 
         public void onCommit(string commit)
         {
-            CommitEvent(commit);
+            CommitEvent?.Invoke(commit);
         }
 
         public void onGetCompExt(ref refRECT rECT)
         {
-            GetCompExtEvent(ref rECT);
+            GetCompExtEvent?.Invoke(ref rECT);
         }
 
         #endregion EventRaiser
