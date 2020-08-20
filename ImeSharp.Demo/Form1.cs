@@ -39,8 +39,8 @@ namespace ImeSharp.Demo
             Font f = new Font("Microsoft YaHei", 20F, FontStyle.Regular, GraphicsUnit.Pixel);
             Size sif2 = TextRenderer.MeasureText(labelComp.Text, f, new Size(0, 0), TextFormatFlags.NoPadding);
             //Map rect
-            rect.left = label2.Location.X;
-            rect.top = label2.Location.Y;
+            rect.left = labelComp.Location.X;
+            rect.top = labelComp.Location.Y;
             //should use Font height, because some IME draw CompStr themselves, when CompStr is Empty
             //so the candidate window wont cover the text
             rect.bottom = rect.top + f.Height;
