@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ImeSharp.Demo
@@ -24,6 +20,33 @@ namespace ImeSharp.Demo
             iMEControl.EnableIME();
             iMEControl.CompStrEvent += IMEControl_CompStrEvent;
             iMEControl.CommitEvent += IMEControl_CommitEvent;
+            iMEControl.GetCompExtEvent += this.IMEControl_GetCompExtEvent;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+
+        private void IMEControl_GetCompExtEvent(IntPtr rRect)
+        {
+            RECT rect = (RECT)Marshal.PtrToStructure(rRect, typeof(RECT));//Map from
+
+            Font f = new Font("Microsoft YaHei", 20F, FontStyle.Regular, GraphicsUnit.Pixel);
+            Size sif2 = TextRenderer.MeasureText(labelComp.Text, f, new Size(0, 0), TextFormatFlags.NoPadding);
+            //Map rect
+            rect.left = label2.Location.X;
+            rect.top = label2.Location.Y;
+            //should use Font height, because some IME draw CompStr themselves, when CompStr is Empty
+            //so the candidate window wont cover the text
+            rect.bottom = rect.top + f.Height;
+            rect.right = rect.left + sif2.Width;
+
+            Marshal.StructureToPtr(rect, rRect, true);//Map to
         }
 
         private void IMEControl_CommitEvent(string commit)

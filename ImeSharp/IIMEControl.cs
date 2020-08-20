@@ -10,7 +10,7 @@ namespace ImeSharp
 
     public delegate void CommitHandler(string commit);
 
-    public delegate void GetCompExtHandler(ref refRECT rECT);
+    public delegate void GetCompExtHandler(IntPtr rect);
 
     public interface IIMEControl
     {
