@@ -34,7 +34,6 @@
             this.Text = "Form1";
         }
 
-        #endregion
+        #endregion Windows Form Designer generated code
     }
 }
-

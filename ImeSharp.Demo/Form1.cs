@@ -16,8 +16,24 @@ namespace ImeSharp.Demo
         public Form1()
         {
             InitializeComponent();
-            iMEControl = ImeSharp.GetDefaultControl();
+            KeyDown += Form1_KeyDown;
+
+            //iMEControl = ImeSharp.GetDefaultControl();
+            iMEControl = ImeSharp.Get_IMM32Control();
             iMEControl.Initialize(Handle);
+            iMEControl.EnableIME();
+            iMEControl.CompStrEvent += IMEControl_CompStrEvent;
+            iMEControl.CommitEvent += IMEControl_CommitEvent;
+        }
+
+        private void IMEControl_CommitEvent(string commit)
+        {
+            textBoxResult.Text += commit;
+        }
+
+        private void IMEControl_CompStrEvent(string comp)
+        {
+            labelComp.Text = comp;
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -27,6 +43,8 @@ namespace ImeSharp.Demo
                     iMEControl.DisableIME();
                 else
                     iMEControl.EnableIME();
+            if (e.KeyCode == Keys.Back && textBoxResult.Text.Length > 0)
+                textBoxResult.Text = textBoxResult.Text.Substring(0, textBoxResult.Text.Length - 1);
         }
     }
 }

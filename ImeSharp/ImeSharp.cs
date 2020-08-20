@@ -9,6 +9,16 @@ namespace ImeSharp
             return IsWindows7OrBelow() ? (IIMEControl)new IMM32_IMEControl() : new TF_IMEControl();
         }
 
+        public static IIMEControl Get_IMM32Control()
+        {
+            return new IMM32_IMEControl();
+        }
+
+        public static IIMEControl Get_TFControl()
+        {
+            return new TF_IMEControl();
+        }
+
         /// <summary>
         /// return true if current OS version is Windows 7 or below.
         /// </summary>

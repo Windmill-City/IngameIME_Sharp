@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+<<<<<<< HEAD
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EC9C90A4-82D3-4B5E-AFFA-31E562DCCBF7}</ProjectGuid>
@@ -31,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libtf\libtfWrapper\libtfWrapper.vcxproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,4 +48,19 @@
     <Compile Include="TF_IMEControl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+=======
+    <TargetFrameworks>net452;netcoreapp3.1</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="msctfLib">
+      <HintPath>..\..\msctfLib.dll</HintPath>
+    </Reference>
+    <Reference Include="TextStorLib">
+      <HintPath>..\..\TextStorLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+>>>>>>> 9904b35... Rewrite
 </Project>

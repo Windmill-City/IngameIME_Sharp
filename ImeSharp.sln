@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImeSharp", "ImeSharp\ImeSha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImeSharp.Demo", "ImeSharp.Demo\ImeSharp.Demo.csproj", "{6E10BE80-F0A4-4E75-A6C9-8BD21034B794}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtfWrapper", "libtf\libtfWrapper\libtfWrapper.vcxproj", "{1764E7D0-EF03-42BD-BDFE-C4BCD059D094}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtf", "libtf\libtf\libtf.vcxproj", "{6B9E60B4-51B6-40B0-884A-A5D07081302A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

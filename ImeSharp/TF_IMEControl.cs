@@ -1,6 +1,4 @@
-﻿using ImeSharp.Native;
-using msctfLib;
-using System;
+﻿using System;
 
 namespace ImeSharp
 {
@@ -22,46 +20,36 @@ namespace ImeSharp
 
         #region Private
 
-        private ITfThreadMgr _tfThreadMgr;
-        private ITfDocumentMgr _tfDocumentMgr;
-        private ITfContext _tfContext;
-        private uint _tfClientId;
-        private TF_TextStore _tfTextStore;
-        private TF_TextEditSink _tfTextEditSink;
-        private bool _isIMEEnabled;
+        private AppWrapper appWrapper;
 
         #endregion Private
 
-        public uint _ecReadOnly = msctf.TF_INVALID_COOKIE;
-
         public void Initialize(IntPtr handle, bool isUIElementOnly = false)
         {
-            msctf.TF_CreateThreadMgr(out _tfThreadMgr);
-            (_tfThreadMgr as ITfThreadMgrEx).ActivateEx(out _tfClientId, isUIElementOnly ?
-                msctf.TF_TMF_UIELEMENTENABLEDONLY : 0u);
+            appWrapper = new AppWrapper();
+            appWrapper.Initialize(handle, isUIElementOnly ? ActivateMode.UIELEMENTENABLEDONLY : ActivateMode.DEFAULT);
 
-            //Document
-            _tfThreadMgr.CreateDocumentMgr(out _tfDocumentMgr);
-            _tfThreadMgr.AssociateFocus(ref handle, _tfDocumentMgr, out _);
-
-            //Context
-            _tfTextStore = new TF_TextStore(this);
-            _tfDocumentMgr.CreateContext(_tfClientId, 0, (IntPtr)0, out _tfContext, out _ecReadOnly);
-
-            _tfTextEditSink = new TF_TextEditSink(_tfContext, _tfTextStore);
+            appWrapper.eventCommit += onCommit;
+            appWrapper.eventCompSel += onCompSel;
+            appWrapper.eventCompStr += onCompStr;
+            appWrapper.eventGetCompExt += onGetCompExt;
         }
 
         public bool isIMEEnabled()
         {
-            return _isIMEEnabled;
+            return appWrapper.m_Initilized ? false : appWrapper.m_IsIMEEnabled;
         }
 
         public void DisableIME()
         {
+            if (appWrapper.m_Initilized)
+                appWrapper.DisableIME();
         }
 
         public void EnableIME()
         {
+            if (appWrapper.m_Initilized)
+                appWrapper.EnableIME();
         }
 
         #region EventRaiser
@@ -86,7 +74,7 @@ namespace ImeSharp
             CommitEvent(commit);
         }
 
-        public void onGetCompExt(ref TextStorLib.tagRECT rECT)
+        public void onGetCompExt(refRECT rECT)
         {
             GetCompExtEvent(ref rECT);
         }
