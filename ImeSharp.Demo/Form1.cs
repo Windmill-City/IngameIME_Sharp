@@ -38,13 +38,21 @@ namespace ImeSharp.Demo
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F1)
-                if (iMEControl.isIMEEnabled())
-                    iMEControl.DisableIME();
-                else
-                    iMEControl.EnableIME();
             if (e.KeyCode == Keys.Back && textBoxResult.Text.Length > 0)
                 textBoxResult.Text = textBoxResult.Text.Substring(0, textBoxResult.Text.Length - 1);
+        }
+        private void label1_Click(object sender, EventArgs e)
+        {
+            if (iMEControl.isIMEEnabled())
+            {
+                iMEControl.DisableIME();
+                label1.Text = "IME Disabled";
+            }
+            else
+            {
+                iMEControl.EnableIME();
+                label1.Text = "IME Enabled";
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ namespace ImeSharp
 
         public bool isIMEEnabled()
         {
-            return appWrapper.m_Initilized ? false : appWrapper.m_IsIMEEnabled;
+            return appWrapper.m_Initilized ? appWrapper.m_IsIMEEnabled : false;
         }
 
         public void DisableIME()
