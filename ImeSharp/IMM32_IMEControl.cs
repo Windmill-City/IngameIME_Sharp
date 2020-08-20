@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace ImeSharp
 {
-    internal class IMM32_IMEControl : IIMEControl
+    public class IMM32_IMEControl : IIMEControl
     {
         #region Events
 
