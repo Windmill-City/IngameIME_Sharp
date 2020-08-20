@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace ImeSharp
 {
@@ -76,7 +77,9 @@ namespace ImeSharp
 
         public void onGetCompExt(IntPtr rect)
         {
-            GetCompExtEvent?.Invoke(rect);
+            RECT rect_ = (RECT)Marshal.PtrToStructure(rect, typeof(RECT));//Map from
+            GetCompExtEvent?.Invoke(rect_);
+            Marshal.StructureToPtr(rect_, rect, true);//Map to
         }
 
         #endregion EventRaiser

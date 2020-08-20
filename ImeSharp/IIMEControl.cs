@@ -1,7 +1,17 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace ImeSharp
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+    }
+
     public delegate void CandidateListHandler(CandidateList list);
 
     public delegate void UpdateCompStrHandler(string comp);
@@ -10,7 +20,7 @@ namespace ImeSharp
 
     public delegate void CommitHandler(string commit);
 
-    public delegate void GetCompExtHandler(IntPtr rect);
+    public delegate void GetCompExtHandler(RECT rect);
 
     public interface IIMEControl
     {

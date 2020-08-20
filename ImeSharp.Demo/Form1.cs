@@ -14,8 +14,8 @@ namespace ImeSharp.Demo
             InitializeComponent();
             KeyDown += Form1_KeyDown;
 
-            iMEControl = ImeSharp.GetDefaultControl();
-            //iMEControl = ImeSharp.Get_IMM32Control();
+            //iMEControl = ImeSharp.GetDefaultControl();
+            iMEControl = ImeSharp.Get_IMM32Control();
             iMEControl.Initialize(Handle);
             iMEControl.EnableIME();
             iMEControl.CompStrEvent += IMEControl_CompStrEvent;
@@ -23,19 +23,8 @@ namespace ImeSharp.Demo
             iMEControl.GetCompExtEvent += this.IMEControl_GetCompExtEvent;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
+        private void IMEControl_GetCompExtEvent(RECT rect)
         {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-        }
-
-        private void IMEControl_GetCompExtEvent(IntPtr rRect)
-        {
-            RECT rect = (RECT)Marshal.PtrToStructure(rRect, typeof(RECT));//Map from
-
             Font f = new Font("Microsoft YaHei", 20F, FontStyle.Regular, GraphicsUnit.Pixel);
             Size sif2 = TextRenderer.MeasureText(labelComp.Text, f, new Size(0, 0), TextFormatFlags.NoPadding);
             //Map rect
@@ -45,8 +34,6 @@ namespace ImeSharp.Demo
             //so the candidate window wont cover the text
             rect.bottom = rect.top + f.Height;
             rect.right = rect.left + sif2.Width;
-
-            Marshal.StructureToPtr(rect, rRect, true);//Map to
         }
 
         private void IMEControl_CommitEvent(string commit)
