@@ -296,7 +296,7 @@ namespace ImeSharp
         /// <param name="genrealFlag">Modify Flag for Composition Text or Result Text</param>
         private void Handle_COMPOSITION_Msg(long compFlag, long genrealFlag)
         {
-            if ((GCS_COMPSTR & compFlag) != 0)//Comp String/Sel Changed
+            if ((GCS_COMPSTR & compFlag) != 0 && !_isUIElementOnly)//Comp String/Sel Changed
             {
                 //CompStr
                 int size = ImmGetCompositionString(_immContext, GCS_COMPSTR, null, 0);
@@ -346,9 +346,8 @@ namespace ImeSharp
             cand.rcArea = rect;
             ImmSetCandidateWindow(_immContext, ref cand);
             COMPOSITIONFORM comp = new COMPOSITIONFORM();
-            comp.dwStyle = CFS_RECT;
+            comp.dwStyle = CFS_POINT;//If use CFS_RECT, Chinese IME wont set comp text for some start words
             comp.ptCurrentPos = InsertPos;
-            comp.rcArea = rect;
             ImmSetCompositionWindow(_immContext, ref comp);
         }
 
