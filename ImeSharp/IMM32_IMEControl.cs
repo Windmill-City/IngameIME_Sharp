@@ -335,18 +335,12 @@ namespace ImeSharp
         {
             RECT rect = new RECT();
             onGetCompExt(ref rect);
-            POINT curPoint = new POINT();
-            curPoint.x = rect.left;
-            curPoint.y = rect.top;
-            CANDIDATEFORM cand = new CANDIDATEFORM();
-            cand.dwIndex = 0;
-            cand.dwStyle = CFS_EXCLUDE;
-            cand.ptCurrentPos = curPoint;
-            cand.rcArea = rect;
-            ImmSetCandidateWindow(_immContext, ref cand);
+            POINT InsertPos = new POINT();
+            InsertPos.x = rect.left;
+            InsertPos.y = rect.top;
             COMPOSITIONFORM comp = new COMPOSITIONFORM();
             comp.dwStyle = CFS_RECT;
-            comp.ptCurrentPos = curPoint;
+            comp.ptCurrentPos = InsertPos;
             comp.rcArea = rect;
             ImmSetCompositionWindow(_immContext, ref comp);
         }
