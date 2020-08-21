@@ -13,8 +13,8 @@ namespace ImeSharp.Demo
             InitializeComponent();
             KeyDown += Form1_KeyDown;
 
-            //initAsIMM32();
-            initAsTF();
+            initAsIMM32();
+            //initAsTF();
             imeModeState.Text = (iMEControl is TF_IMEControl ? "TF" : "IMM32") + "(Click to change)";
         }
 
