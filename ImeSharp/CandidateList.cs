@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using static ImeSharp.IMM32_IMEControl;

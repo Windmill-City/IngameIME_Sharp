@@ -141,13 +141,15 @@ namespace ImeSharp
         public void DisableIME()
         {
             _isIMEEnabled = false;
-            ImmSetOpenStatus(_immContext, false);
+            //need to associate to NULL, or when press shift key/click on status wnd
+            //will enable IME
+            ImmAssociateContext(_hWnd, IntPtr.Zero);
         }
 
         public void EnableIME()
         {
             _isIMEEnabled = true;
-            ImmSetOpenStatus(_immContext, true);
+            ImmAssociateContext(_hWnd, _immContext);
         }
 
         public void Dispose()
@@ -209,24 +211,28 @@ namespace ImeSharp
                 //See:https://docs.microsoft.com/en-us/windows/win32/intl/wm-ime-setcontext
                 //we need to associatecontext, for activate IME
                 case WM_IME_SETCONTEXT:
-                    if ((long)wParam == 1)//wParam == 1 means window active otherwise not
+                    if ((long)wParam == 1 && _isIMEEnabled)//wParam == 1 means window active otherwise not
                         ImmAssociateContext(hWnd, _immContext);
-                    if (_isIMEEnabled)
-                        ImmSetOpenStatus(_immContext, true);
+
+                    ImmSetOpenStatus(_immContext, _isIMEEnabled);
+
                     if (_isUIElementOnly)
+                    {
                         lParam = (IntPtr)(((long)lParam) & ~ISC_SHOWUICANDIDATEWINDOW);
-                    lParam = (IntPtr)(((long)lParam) & ~ISC_SHOWUICOMPOSITIONWINDOW);
+                        lParam = (IntPtr)(((long)lParam) & ~ISC_SHOWUICOMPOSITIONWINDOW);
+                    }
                     break;
 
                 case WM_IME_COMPOSITION:
                     Handle_COMPOSITION_Msg((long)wParam, (long)lParam);
+                    if (!_isUIElementOnly) break;
                     goto Handled;
 
                 case WM_IME_STARTCOMPOSITION:
                 case WM_IME_ENDCOMPOSITION:
+                    if (!_isUIElementOnly) break;
                     //we handle and draw the comp text
                     //so we dont pass this msg to the next
-
                     //Clear CompStr
                     onCompStr("");
                     //Clear candidates
@@ -235,6 +241,7 @@ namespace ImeSharp
                     goto Handled;
 
                 case WM_IME_NOTIFY:
+                    if (!_isUIElementOnly) break;
                     Handle_NOTIFY_Msg((long)wParam, (long)lParam);
                     goto Handled;
 
