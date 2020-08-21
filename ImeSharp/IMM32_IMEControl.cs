@@ -227,14 +227,18 @@ namespace ImeSharp
 
                 case WM_IME_COMPOSITION:
                     Handle_COMPOSITION_Msg((long)wParam, (long)lParam);
-                    if (!_isUIElementOnly) break;
+                    if (!_isUIElementOnly)
+                    {
+                        update_IME_Wnd_Rect();
+                        break;
+                    }
                     goto Handled;
 
                 case WM_IME_STARTCOMPOSITION:
                 case WM_IME_ENDCOMPOSITION:
+                    if (!_isUIElementOnly) break;
                     //Clear CompStr
                     onCompStr("");
-                    if (!_isUIElementOnly) break;
                     //Clear candidates
                     candidate.Reset();
                     onCandidateList(candidate);
@@ -312,7 +316,42 @@ namespace ImeSharp
             }
         }
 
-        #endregion Handle WM_IME_COMPOSITION
+        #region Update IME Wnd Rect
+
+        #region IME Set style
+
+        // bit field for IMC_SETCOMPOSITIONWINDOW, IMC_SETCANDIDATEWINDOW
+
+        public const int CFS_DEFAULT = 0x0000;
+        public const int CFS_RECT = 0x0001;
+        public const int CFS_POINT = 0x0002;
+        public const int CFS_FORCE_POSITION = 0x0020;
+        public const int CFS_CANDIDATEPOS = 0x0040;
+        public const int CFS_EXCLUDE = 0x0080;
+
+        #endregion IME Set style
+
+        private void update_IME_Wnd_Rect()
+        {
+            RECT rect = new RECT();
+            onGetCompExt(ref rect);
+            POINT curPoint = new POINT();
+            curPoint.x = rect.left;
+            curPoint.y = rect.top;
+            CANDIDATEFORM cand = new CANDIDATEFORM();
+            cand.dwIndex = 0;
+            cand.dwStyle = CFS_EXCLUDE;
+            cand.ptCurrentPos = curPoint;
+            cand.rcArea = rect;
+            ImmSetCandidateWindow(_immContext, ref cand);
+            COMPOSITIONFORM comp = new COMPOSITIONFORM();
+            comp.dwStyle = CFS_RECT;
+            comp.ptCurrentPos = curPoint;
+            comp.rcArea = rect;
+            ImmSetCompositionWindow(_immContext, ref comp);
+        }
+
+        #endregion Update IME Wnd Rect
 
         #region Handle WM_IME_NOTIFY
 
@@ -365,6 +404,8 @@ namespace ImeSharp
         }
 
         #endregion Handle WM_IME_NOTIFY
+
+        #endregion Handle WM_IME_COMPOSITION
 
         #endregion Process WM Msg
 

@@ -31,7 +31,7 @@ namespace ImeSharp.Demo
 
         private void init()
         {
-            iMEControl.Initialize(Handle, true);
+            iMEControl.Initialize(Handle, false);
             iMEControl.EnableIME();
             iMEControl.CompStrEvent += IMEControl_CompStrEvent;
             iMEControl.CommitEvent += IMEControl_CommitEvent;
@@ -57,7 +57,7 @@ namespace ImeSharp.Demo
 
         private void IMEControl_GetCompExtEvent(ref RECT rect)
         {
-            Font f = new Font("Microsoft YaHei", 20F, FontStyle.Regular, GraphicsUnit.Pixel);
+            Font f = new Font("Microsoft YaHei", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
             Size sif2 = TextRenderer.MeasureText(labelComp.Text, f, new Size(0, 0), TextFormatFlags.NoPadding);
             //Map rect
             rect.left = labelComp.Location.X;
