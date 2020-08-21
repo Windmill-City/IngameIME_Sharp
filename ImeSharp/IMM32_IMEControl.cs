@@ -180,19 +180,17 @@ namespace ImeSharp
                 //When init window, we will recive this Msg
                 //If we want IME input, we need to AccrociateContext
                 case WM_IME_INPUTLANGCHANGE:
-                    if (_isIMEEnabled)
-                        ImmAssociateContext(hWnd, _immContext);
+                    ImmAssociateContext(hWnd, _immContext);
                     goto Handled;
 
                 //SETCONTEXT should be handled by IME, we can control IMEs UI(Candidate Window, etc) by changing the lParam
                 //See:https://docs.microsoft.com/en-us/windows/win32/intl/wm-ime-setcontext
                 //we need to associatecontext, for activate IME
                 case WM_IME_SETCONTEXT:
-                    if (_isIMEEnabled && (int)wParam == 1)//wParam == 1 means window active otherwise not
-                    {
+                    if ((int)wParam == 1)//wParam == 1 means window active otherwise not
                         ImmAssociateContext(hWnd, _immContext);
+                    if (_isIMEEnabled)
                         ImmSetOpenStatus(_immContext, true);
-                    }
                     break;
 
                 case WM_IME_COMPOSITION:

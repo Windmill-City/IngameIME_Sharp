@@ -86,6 +86,8 @@ namespace ImeSharp.Demo
             {
                 iMEControl.Dispose();
                 initAsIMM32();
+                Hide();
+                Show();//refresh
             }
             else
             {
