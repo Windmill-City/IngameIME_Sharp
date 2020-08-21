@@ -19,18 +19,6 @@ namespace ImeSharp
 
         #endregion Events
 
-        #region WM Msg
-
-        public const int WM_IME_SETCONTEXT = 0x0281;
-        public const int WM_IME_NOTIFY = 0x0282;
-        public const int WM_IME_CONTROL = 0x0283;
-        public const int WM_IME_STARTCOMPOSITION = 0x010D;
-        public const int WM_IME_ENDCOMPOSITION = 0x010E;
-        public const int WM_IME_COMPOSITION = 0x010F;
-        public const int WM_IME_INPUTLANGCHANGE = 0x0051;
-
-        #endregion WM Msg
-
         #region IMM32
 
         [StructLayout(LayoutKind.Sequential)]
@@ -41,7 +29,7 @@ namespace ImeSharp
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct CANDIDATELIST
+        public unsafe struct CANDIDATELIST
         {
             public uint dwSize;
             public uint dwStyle;
@@ -50,8 +38,7 @@ namespace ImeSharp
             public uint dwPageStart;
             public uint dwPageSize;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1, ArraySubType = UnmanagedType.U4)]
-            public uint[] dwOffset;
+            public fixed uint dwOffset[1];
         }
 
         // CANDIDATEFORM structures
@@ -86,7 +73,7 @@ namespace ImeSharp
         public static extern IntPtr ImmReleaseContext(IntPtr hWnd, IntPtr hIMC);
 
         [DllImport("imm32.dll", CharSet = CharSet.Unicode)]
-        public static extern uint ImmGetCandidateList(IntPtr hIMC, uint deIndex, IntPtr candidateList, uint dwBufLen);
+        public static extern uint ImmGetCandidateList(IntPtr hIMC, uint deIndex, byte[] buf, uint dwBufLen);
 
         [DllImport("imm32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int ImmGetCompositionString(IntPtr hIMC, int CompositionStringFlag, char[] buf, int bufferLength);
@@ -125,9 +112,12 @@ namespace ImeSharp
         private IntPtr _immContext;
         private IntPtr _hWnd;
         private IntPtr prevWndProc;
+        private WndProc WndProc_;
 
         private bool _isUIElementOnly;
         private bool _isIMEEnabled;
+
+        private CandidateList candidate = new CandidateList();
 
         #endregion Private
 
@@ -139,7 +129,8 @@ namespace ImeSharp
             _isUIElementOnly = isUIElementOnly;
             _immContext = ImmGetContext(handle);
 
-            prevWndProc = SetWindowLong(handle, GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(new WndProc(Handle_IMM32_MSG)));
+            WndProc_ = new WndProc(Handle_IMM32_MSG);//in case gc
+            prevWndProc = SetWindowLong(handle, GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(WndProc_));
         }
 
         public bool isIMEEnabled()
@@ -173,6 +164,30 @@ namespace ImeSharp
 
         private delegate IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
+        #region WM Msg
+
+        public const int WM_IME_SETCONTEXT = 0x0281;
+        public const int WM_IME_NOTIFY = 0x0282;
+        public const int WM_IME_CONTROL = 0x0283;
+        public const int WM_IME_STARTCOMPOSITION = 0x010D;
+        public const int WM_IME_ENDCOMPOSITION = 0x010E;
+        public const int WM_IME_COMPOSITION = 0x010F;
+        public const int WM_IME_INPUTLANGCHANGE = 0x0051;
+
+        #endregion WM Msg
+
+        #region SetContext Flags
+
+        // lParam for WM_IME_SETCONTEXT
+
+        public const uint ISC_SHOWUICANDIDATEWINDOW = 0x00000001;
+        public const uint ISC_SHOWUICOMPOSITIONWINDOW = 0x80000000;
+        public const uint ISC_SHOWUIGUIDELINE = 0x40000000;
+        public const uint ISC_SHOWUIALLCANDIDATEWINDOW = 0x0000000F;
+        public const uint ISC_SHOWUIALL = 0xC000000F;
+
+        #endregion SetContext Flags
+
         private IntPtr Handle_IMM32_MSG(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             switch (msg)
@@ -187,14 +202,17 @@ namespace ImeSharp
                 //See:https://docs.microsoft.com/en-us/windows/win32/intl/wm-ime-setcontext
                 //we need to associatecontext, for activate IME
                 case WM_IME_SETCONTEXT:
-                    if ((int)wParam == 1)//wParam == 1 means window active otherwise not
+                    if ((long)wParam == 1)//wParam == 1 means window active otherwise not
                         ImmAssociateContext(hWnd, _immContext);
                     if (_isIMEEnabled)
                         ImmSetOpenStatus(_immContext, true);
+                    if (_isUIElementOnly)
+                        lParam = (IntPtr)(((long)lParam) & ~ISC_SHOWUICANDIDATEWINDOW);
+                    lParam = (IntPtr)(((long)lParam) & ~ISC_SHOWUICOMPOSITIONWINDOW);
                     break;
 
                 case WM_IME_COMPOSITION:
-                    Handle_COMPOSITION_Msg((int)wParam, (int)lParam);
+                    Handle_COMPOSITION_Msg((long)wParam, (long)lParam);
                     goto Handled;
 
                 case WM_IME_STARTCOMPOSITION:
@@ -204,6 +222,13 @@ namespace ImeSharp
 
                     //Clear CompStr
                     onCompStr("");
+                    //Clear candidates
+                    candidate.Reset();
+                    onCandidateList(candidate);
+                    goto Handled;
+
+                case WM_IME_NOTIFY:
+                    Handle_NOTIFY_Msg((long)wParam, (long)lParam);
                     goto Handled;
 
                 default:
@@ -249,7 +274,7 @@ namespace ImeSharp
         /// </summary>
         /// <param name="compFlag">Modify Flag for Composition Text</param>
         /// <param name="genrealFlag">Modify Flag for Composition Text or Result Text</param>
-        private void Handle_COMPOSITION_Msg(int compFlag, int genrealFlag)
+        private void Handle_COMPOSITION_Msg(long compFlag, long genrealFlag)
         {
             if ((GCS_COMPSTR & compFlag) != 0)//Comp String/Sel Changed
             {
@@ -268,6 +293,58 @@ namespace ImeSharp
         }
 
         #endregion Handle WM_IME_COMPOSITION
+
+        #region Handle WM_IME_NOTIFY
+
+        #region NOTIFY Flag
+
+        // wParam of report message WM_IME_NOTIFY
+
+        public const int IMN_CLOSESTATUSWINDOW = 0x0001;
+        public const int IMN_OPENSTATUSWINDOW = 0x0002;
+        public const int IMN_CHANGECANDIDATE = 0x0003;
+        public const int IMN_CLOSECANDIDATE = 0x0004;
+        public const int IMN_OPENCANDIDATE = 0x0005;
+        public const int IMN_SETCONVERSIONMODE = 0x0006;
+        public const int IMN_SETSENTENCEMODE = 0x0007;
+        public const int IMN_SETOPENSTATUS = 0x0008;
+        public const int IMN_SETCANDIDATEPOS = 0x0009;
+        public const int IMN_SETCOMPOSITIONFONT = 0x000A;
+        public const int IMN_SETCOMPOSITIONWINDOW = 0x000B;
+        public const int IMN_SETSTATUSWINDOWPOS = 0x000C;
+        public const int IMN_GUIDELINE = 0x000D;
+        public const int IMN_PRIVATE = 0x000E;
+
+        #endregion NOTIFY Flag
+
+        private void Handle_NOTIFY_Msg(long cmd, long data)
+        {
+            switch (cmd)
+            {
+                case IMN_CHANGECANDIDATE:
+                    uint size = ImmGetCandidateList(_immContext, 0, null, 0);
+
+                    var buf = new byte[size];
+                    size = ImmGetCandidateList(_immContext, 0, buf, size);
+                    if (size > 0)//Fetch failed
+                        candidate.Apply(buf);
+                    else
+                        candidate.Reset();
+                    onCandidateList(candidate);
+                    break;
+
+                case IMN_OPENCANDIDATE:
+                case IMN_CLOSECANDIDATE:
+                    candidate.Reset();
+                    onCandidateList(candidate);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        #endregion Handle WM_IME_NOTIFY
 
         #endregion Process WM Msg
 

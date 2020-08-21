@@ -36,6 +36,17 @@ namespace ImeSharp.Demo
             iMEControl.CompStrEvent += IMEControl_CompStrEvent;
             iMEControl.CommitEvent += IMEControl_CommitEvent;
             iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
+            iMEControl.CandidateListEvent += IMEControl_CandidateListEvent;
+        }
+
+        private void IMEControl_CandidateListEvent(CandidateList list)
+        {
+            textBoxCandidates.Text = "";
+            foreach (var item in list.Candidates)
+            {
+                textBoxCandidates.Text += item;
+                textBoxCandidates.Text += "\n";
+            }
         }
 
         private void IMEControl_GetCompExtEvent(ref RECT rect)
