@@ -338,6 +338,13 @@ namespace ImeSharp
             POINT InsertPos = new POINT();
             InsertPos.x = rect.left;
             InsertPos.y = rect.top;
+            //Jap and Korea IME may use this, keep it
+            CANDIDATEFORM cand = new CANDIDATEFORM();
+            cand.dwIndex = 0;
+            cand.dwStyle = CFS_EXCLUDE;
+            cand.ptCurrentPos = InsertPos;
+            cand.rcArea = rect;
+            ImmSetCandidateWindow(_immContext, ref cand);
             COMPOSITIONFORM comp = new COMPOSITIONFORM();
             comp.dwStyle = CFS_RECT;
             comp.ptCurrentPos = InsertPos;
