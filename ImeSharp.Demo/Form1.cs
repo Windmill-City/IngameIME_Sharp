@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ImeSharp.Demo
@@ -14,13 +13,28 @@ namespace ImeSharp.Demo
             InitializeComponent();
             KeyDown += Form1_KeyDown;
 
-            //iMEControl = ImeSharp.GetDefaultControl();
+            initAsIMM32();
+            imeModeState.Text = (iMEControl is TF_IMEControl ? "TF" : "IMM32") + "(Click to change)";
+        }
+
+        private void initAsTF()
+        {
+            iMEControl = ImeSharp.Get_TFControl();
+            iMEControl.Initialize(Handle);
+            iMEControl.EnableIME();
+            iMEControl.CompStrEvent += IMEControl_CompStrEvent;
+            iMEControl.CommitEvent += IMEControl_CommitEvent;
+            iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
+        }
+
+        private void initAsIMM32()
+        {
             iMEControl = ImeSharp.Get_IMM32Control();
             iMEControl.Initialize(Handle);
             iMEControl.EnableIME();
             iMEControl.CompStrEvent += IMEControl_CompStrEvent;
             iMEControl.CommitEvent += IMEControl_CommitEvent;
-            iMEControl.GetCompExtEvent += this.IMEControl_GetCompExtEvent;
+            iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
         }
 
         private void IMEControl_GetCompExtEvent(RECT rect)
@@ -63,6 +77,21 @@ namespace ImeSharp.Demo
                 iMEControl.EnableIME();
                 label1.Text = "IME Enabled";
             }
+        }
+
+        private void imeModeState_Click(object sender, EventArgs e)
+        {
+            if (iMEControl is TF_IMEControl)
+            {
+                iMEControl.Dispose();
+                initAsIMM32();
+            }
+            else
+            {
+                iMEControl.Dispose();
+                initAsTF();
+            }
+            imeModeState.Text = iMEControl is TF_IMEControl ? "TF" : "IMM32";
         }
     }
 }

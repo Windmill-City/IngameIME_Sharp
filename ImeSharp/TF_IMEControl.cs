@@ -53,6 +53,11 @@ namespace ImeSharp
                 appWrapper.EnableIME();
         }
 
+        public void Dispose()
+        {
+            appWrapper.Dispose();
+        }
+
         #region EventRaiser
 
         public void onCandidateList(CandidateList list)

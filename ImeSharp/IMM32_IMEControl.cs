@@ -159,6 +159,14 @@ namespace ImeSharp
             ImmSetOpenStatus(_immContext, true);
         }
 
+        public void Dispose()
+        {
+            ImmAssociateContext(_hWnd, IntPtr.Zero);
+            ImmReleaseContext(_hWnd, _immContext);
+
+            SetWindowLong(_hWnd, GWL_WNDPROC, prevWndProc);
+        }
+
         #endregion IIMEControl
 
         #region Process WM Msg

@@ -22,7 +22,7 @@ namespace ImeSharp
 
     public delegate void GetCompExtHandler(RECT rect);
 
-    public interface IIMEControl
+    public interface IIMEControl : IDisposable
     {
         event CandidateListHandler CandidateListEvent;
 
