@@ -13,7 +13,8 @@ namespace ImeSharp.Demo
             InitializeComponent();
             KeyDown += Form1_KeyDown;
 
-            initAsIMM32();
+            //initAsIMM32();
+            initAsTF();
             imeModeState.Text = (iMEControl is TF_IMEControl ? "TF" : "IMM32") + "(Click to change)";
         }
 
@@ -37,7 +38,7 @@ namespace ImeSharp.Demo
             iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
         }
 
-        private void IMEControl_GetCompExtEvent(RECT rect)
+        private void IMEControl_GetCompExtEvent(ref RECT rect)
         {
             Font f = new Font("Microsoft YaHei", 20F, FontStyle.Regular, GraphicsUnit.Pixel);
             Size sif2 = TextRenderer.MeasureText(labelComp.Text, f, new Size(0, 0), TextFormatFlags.NoPadding);

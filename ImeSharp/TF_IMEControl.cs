@@ -83,7 +83,7 @@ namespace ImeSharp
         public void onGetCompExt(IntPtr rect)
         {
             RECT rect_ = (RECT)Marshal.PtrToStructure(rect, typeof(RECT));//Map from
-            GetCompExtEvent?.Invoke(rect_);
+            GetCompExtEvent?.Invoke(ref rect_);
             Marshal.StructureToPtr(rect_, rect, true);//Map to
         }
 

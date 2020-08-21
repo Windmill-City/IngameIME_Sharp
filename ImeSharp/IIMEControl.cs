@@ -20,7 +20,7 @@ namespace ImeSharp
 
     public delegate void CommitHandler(string commit);
 
-    public delegate void GetCompExtHandler(RECT rect);
+    public delegate void GetCompExtHandler(ref RECT rect);
 
     public interface IIMEControl : IDisposable
     {

@@ -295,9 +295,9 @@ namespace ImeSharp
             CommitEvent?.Invoke(commit);
         }
 
-        public void onGetCompExt(RECT rect)
+        public void onGetCompExt(ref RECT rect)
         {
-            GetCompExtEvent?.Invoke(rect);
+            GetCompExtEvent?.Invoke(ref rect);
         }
 
         #endregion EventRaiser
