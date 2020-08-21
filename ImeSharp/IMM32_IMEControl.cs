@@ -174,6 +174,10 @@ namespace ImeSharp
         public const int WM_IME_COMPOSITION = 0x010F;
         public const int WM_IME_INPUTLANGCHANGE = 0x0051;
 
+        public const int WM_GETDLGCODE = 0x0087;
+
+        public const int DLGC_WANTALLKEYS = 0x0004;
+
         #endregion WM Msg
 
         #region SetContext Flags
@@ -192,6 +196,9 @@ namespace ImeSharp
         {
             switch (msg)
             {
+                case WM_GETDLGCODE:
+                    //Return this to make IME get the keys
+                    return (IntPtr)DLGC_WANTALLKEYS;
                 //When init window, we will recive this Msg
                 //If we want IME input, we need to AccrociateContext
                 case WM_IME_INPUTLANGCHANGE:
