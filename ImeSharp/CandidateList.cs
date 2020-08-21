@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using static ImeSharp.IMM32_IMEControl;
@@ -7,13 +9,13 @@ namespace ImeSharp
 {
     public class CandidateList
     {
-        public uint Count;
+        public int Count;
 
-        public uint CurSel;
+        public int CurSel;
 
-        public uint PageSize;
+        public int PageSize;
 
-        public uint CurPage;
+        public int CurPage;
 
         public List<string> Candidates = new List<string>();
 
@@ -25,19 +27,17 @@ namespace ImeSharp
                 fixed (byte* p = pCandidate)
                 {
                     CANDIDATELIST* cl = (CANDIDATELIST*)p;
-                    CurSel = cl->dwSelection;
-                    CurPage = cl->dwPageStart;
-                    PageSize = cl->dwPageSize;
-                    Count = cl->dwCount;
+                    CurSel = (int)cl->dwSelection;
+                    CurPage = (int)cl->dwPageStart;
+                    PageSize = (int)cl->dwPageSize;
+                    Count = (int)cl->dwCount;
 
-                    int offset = (int)cl->dwOffset[0];
-                    int len = pCandidate.Length - offset;
-                    var str = Encoding.Unicode.GetString(pCandidate, offset, len);
-                    str = Regex.Replace(str, @"\0+$", "");
-                    var par = "\0".ToCharArray();
-                    foreach (var item in str.Split(par))
+                    for (int i = CurPage; i < PageSize + CurPage; i++)
                     {
-                        Candidates.Add(item);
+                        int offset = (int)cl->dwOffset[i];
+                        var ptrSrc = (IntPtr)(p + offset);
+
+                        Candidates.Add(Marshal.PtrToStringAuto(ptrSrc));
                     }
                 }
             }

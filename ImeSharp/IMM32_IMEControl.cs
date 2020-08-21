@@ -218,8 +218,10 @@ namespace ImeSharp
 
                     if (_isUIElementOnly)
                     {
-                        lParam = (IntPtr)(((long)lParam) & ~ISC_SHOWUICANDIDATEWINDOW);
-                        lParam = (IntPtr)(((long)lParam) & ~ISC_SHOWUICOMPOSITIONWINDOW);
+                        long val = (long)lParam;
+                        val &= ~ISC_SHOWUICANDIDATEWINDOW;
+                        val &= ~ISC_SHOWUICOMPOSITIONWINDOW;
+                        lParam = (IntPtr)val;
                     }
                     break;
 
@@ -230,14 +232,14 @@ namespace ImeSharp
 
                 case WM_IME_STARTCOMPOSITION:
                 case WM_IME_ENDCOMPOSITION:
-                    if (!_isUIElementOnly) break;
-                    //we handle and draw the comp text
-                    //so we dont pass this msg to the next
                     //Clear CompStr
                     onCompStr("");
+                    if (!_isUIElementOnly) break;
                     //Clear candidates
                     candidate.Reset();
                     onCandidateList(candidate);
+                    //if we handle and draw the comp text
+                    //we dont pass this msg to the next
                     goto Handled;
 
                 case WM_IME_NOTIFY:
@@ -292,10 +294,14 @@ namespace ImeSharp
         {
             if ((GCS_COMPSTR & compFlag) != 0)//Comp String/Sel Changed
             {
+                //CompStr
                 int size = ImmGetCompositionString(_immContext, GCS_COMPSTR, null, 0);
                 char[] buf = new char[size / Marshal.SizeOf(typeof(short))];
                 ImmGetCompositionString(_immContext, GCS_COMPSTR, buf, size);
                 onCompStr(new string(buf));
+                //CompSel
+                int sel = ImmGetCompositionString(_immContext, GCS_CURSORPOS, null, 0);
+                onCompSel(sel, sel);
             }
             if ((GCS_RESULTSTR & genrealFlag) != 0)//Has commited
             {

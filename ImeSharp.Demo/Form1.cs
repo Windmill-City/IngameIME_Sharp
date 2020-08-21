@@ -14,6 +14,7 @@ namespace ImeSharp.Demo
             KeyDown += Form1_KeyDown;
 
             initAsIMM32();
+            init();
             //initAsTF();
             imeModeState.Text = (iMEControl is TF_IMEControl ? "TF" : "IMM32") + "(Click to change)";
         }
@@ -21,22 +22,26 @@ namespace ImeSharp.Demo
         private void initAsTF()
         {
             iMEControl = ImeSharp.Get_TFControl();
-            iMEControl.Initialize(Handle);
-            iMEControl.EnableIME();
-            iMEControl.CompStrEvent += IMEControl_CompStrEvent;
-            iMEControl.CommitEvent += IMEControl_CommitEvent;
-            iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
         }
 
         private void initAsIMM32()
         {
             iMEControl = ImeSharp.Get_IMM32Control();
-            iMEControl.Initialize(Handle);
+        }
+
+        private void init()
+        {
+            iMEControl.Initialize(Handle, true);
             iMEControl.EnableIME();
             iMEControl.CompStrEvent += IMEControl_CompStrEvent;
             iMEControl.CommitEvent += IMEControl_CommitEvent;
             iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
             iMEControl.CandidateListEvent += IMEControl_CandidateListEvent;
+            iMEControl.CompSelEvent += IMEControl_CompSelEvent;
+        }
+
+        private void IMEControl_CompSelEvent(int acpStart, int acpEnd)
+        {
         }
 
         private void IMEControl_CandidateListEvent(CandidateList list)
@@ -45,8 +50,9 @@ namespace ImeSharp.Demo
             foreach (var item in list.Candidates)
             {
                 textBoxCandidates.Text += item;
-                textBoxCandidates.Text += "\n";
+                textBoxCandidates.Text += "\r\n";
             }
+            textBoxCandidates.Text += string.Format("Count {0} CurSel {1} CurPage {2} PageSize {3}", list.Count, list.CurSel, list.CurPage, list.PageSize);
         }
 
         private void IMEControl_GetCompExtEvent(ref RECT rect)
@@ -97,14 +103,15 @@ namespace ImeSharp.Demo
             {
                 iMEControl.Dispose();
                 initAsIMM32();
-                Hide();
-                Show();//refresh
             }
             else
             {
                 iMEControl.Dispose();
                 initAsTF();
             }
+            init();
+            Hide();
+            Show();//refresh
             imeModeState.Text = iMEControl is TF_IMEControl ? "TF" : "IMM32";
         }
     }
