@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CandidateList.cs" />
+    <Compile Include="CompositionEventArgs.cs" />
     <Compile Include="IIMEControl.cs" />
     <Compile Include="ImeSharp.cs" />
     <Compile Include="IMM32_IMEControl.cs" />

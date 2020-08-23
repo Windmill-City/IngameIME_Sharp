@@ -40,8 +40,9 @@ namespace ImeSharp.Demo
             iMEControl.CompSelEvent += IMEControl_CompSelEvent;
         }
 
-        private void IMEControl_CompSelEvent(int acpStart, int acpEnd)
+        private void IMEControl_CompositionEvent(CompositionEventArgs comp)
         {
+            throw new NotImplementedException();
         }
 
         private void IMEControl_CandidateListEvent(CandidateList list)
@@ -76,6 +77,11 @@ namespace ImeSharp.Demo
         private void IMEControl_CompStrEvent(string comp)
         {
             labelComp.Text = comp;
+        }
+
+        private void Application_Idle(object sender, EventArgs e)
+        {
+            FakeDraw();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)

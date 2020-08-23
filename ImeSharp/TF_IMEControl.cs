@@ -7,15 +7,11 @@ namespace ImeSharp
     {
         #region Event
 
-        public event UpdateCompSelHandler CompSelEvent;
-
-        public event UpdateCompStrHandler CompStrEvent;
-
-        public event CommitHandler CommitEvent;
-
         public event GetCompExtHandler GetCompExtEvent;
 
         public event CandidateListHandler CandidateListEvent;
+
+        public event CompositionHandler CompositionEvent;
 
         #endregion Event
 
@@ -25,14 +21,13 @@ namespace ImeSharp
 
         #endregion Private
 
+        #region IIMEControl
+
         public void Initialize(IntPtr handle, bool isUIElementOnly = false)
         {
             appWrapper = new AppWrapper();
             appWrapper.Initialize(handle, isUIElementOnly ? ActivateMode.UIELEMENTENABLEDONLY : ActivateMode.DEFAULT);
 
-            appWrapper.eventCommit += onCommit;
-            appWrapper.eventCompSel += onCompSel;
-            appWrapper.eventCompStr += onCompStr;
             appWrapper.eventGetCompExt += onGetCompExt;
         }
 
@@ -58,6 +53,8 @@ namespace ImeSharp
             appWrapper.Dispose();
         }
 
+        #endregion IIMEControl
+
         #region EventRaiser
 
         public void onCandidateList(CandidateList list)
@@ -65,19 +62,9 @@ namespace ImeSharp
             CandidateListEvent?.Invoke(list);
         }
 
-        public void onCompSel(int acpStart, int acpEnd)
+        public void onCompostion(CompositionEventArgs comp)
         {
-            CompSelEvent?.Invoke(acpStart, acpEnd);
-        }
-
-        public void onCompStr(string comp)
-        {
-            CompStrEvent?.Invoke(comp);
-        }
-
-        public void onCommit(string commit)
-        {
-            CommitEvent?.Invoke(commit);
+            CompositionEvent?.Invoke(comp);
         }
 
         public void onGetCompExt(IntPtr rect)

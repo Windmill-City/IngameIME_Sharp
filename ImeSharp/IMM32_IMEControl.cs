@@ -7,17 +7,15 @@ namespace ImeSharp
     {
         #region Events
 
-        public event UpdateCompSelHandler CompSelEvent;
+        public event CandidateListHandler CandidateListEvent;
 
-        public event UpdateCompStrHandler CompStrEvent;
-
-        public event CommitHandler CommitEvent;
+        public event CompositionHandler CompositionEvent;
 
         public event GetCompExtHandler GetCompExtEvent;
 
-        public event CandidateListHandler CandidateListEvent;
-
         #endregion Events
+
+        #region Imported Dlls
 
         #region IMM32
 
@@ -106,6 +104,8 @@ namespace ImeSharp
         private static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         #endregion User32
+
+        #endregion Imported Dlls
 
         #region Private
 
@@ -235,10 +235,13 @@ namespace ImeSharp
                     goto Handled;
 
                 case WM_IME_STARTCOMPOSITION:
+                    if (!_isUIElementOnly) break;
+                    onComposition(new CompositionEventArgs(CompositionState.StartComposition));
+                    goto Handled;
                 case WM_IME_ENDCOMPOSITION:
                     if (!_isUIElementOnly) break;
                     //Clear CompStr
-                    onCompStr("");
+                    onComposition(new CompositionEventArgs(CompositionState.EndComposition));
                     //Clear candidates
                     candidate.Reset();
                     onCandidateList(candidate);
@@ -302,17 +305,17 @@ namespace ImeSharp
                 int size = ImmGetCompositionString(_immContext, GCS_COMPSTR, null, 0);
                 char[] buf = new char[size / Marshal.SizeOf(typeof(short))];
                 ImmGetCompositionString(_immContext, GCS_COMPSTR, buf, size);
-                onCompStr(new string(buf));
+                string compStr = new string(buf);
                 //CompSel
                 int sel = ImmGetCompositionString(_immContext, GCS_CURSORPOS, null, 0);
-                onCompSel(sel, sel);
+                onComposition(new CompositionEventArgs(compStr, sel));
             }
             if ((GCS_RESULTSTR & genrealFlag) != 0)//Has commited
             {
                 int size = ImmGetCompositionString(_immContext, GCS_RESULTSTR, null, 0);
                 char[] buf = new char[size / Marshal.SizeOf(typeof(short))];
                 ImmGetCompositionString(_immContext, GCS_RESULTSTR, buf, size);
-                onCommit(new string(buf));
+                onComposition(new CompositionEventArgs(new string(buf)));
             }
         }
 
@@ -416,19 +419,9 @@ namespace ImeSharp
             CandidateListEvent?.Invoke(list);
         }
 
-        public void onCompSel(int acpStart, int acpEnd)
+        public void onComposition(CompositionEventArgs comp)
         {
-            CompSelEvent?.Invoke(acpStart, acpEnd);
-        }
-
-        public void onCompStr(string comp)
-        {
-            CompStrEvent?.Invoke(comp);
-        }
-
-        public void onCommit(string commit)
-        {
-            CommitEvent?.Invoke(commit);
+            CompositionEvent?.Invoke(comp);
         }
 
         public void onGetCompExt(ref RECT rect)
