@@ -6,20 +6,24 @@ namespace ImeSharp
     {
         public CompositionState state;
         public int caretPos;
-        public string compStr;
-        public string commitStr;
+        public string strComp;
+        public string strCommit;
+
+        public CompositionEventArgs()
+        {
+        }
 
         public CompositionEventArgs(string compStr, int caretPos)
         {
             state = CompositionState.Composing;
-            this.compStr = compStr;
+            this.strComp = compStr;
             this.caretPos = caretPos;
         }
 
         public CompositionEventArgs(string commitStr)
         {
             state = CompositionState.Commit;
-            this.commitStr = commitStr;
+            this.strCommit = commitStr;
         }
 
         public CompositionEventArgs(CompositionState state)

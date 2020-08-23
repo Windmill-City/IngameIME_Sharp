@@ -12,19 +12,19 @@ namespace ImeSharp
         public int bottom;
     }
 
-    public delegate void CandidateListHandler(CandidateList list);
+    public delegate void CandidateListEventHandler(CandidateList list);
 
-    public delegate void CompositionHandler(CompositionEventArgs comp);
+    public delegate void CompositionEventHandler(CompositionEventArgs comp);
 
-    public delegate void GetCompExtHandler(ref RECT rect);
+    public delegate void GetCompExtEventHandler(ref RECT rect);
 
     public interface IIMEControl : IDisposable
     {
-        event CandidateListHandler CandidateListEvent;
+        event CandidateListEventHandler CandidateListEvent;
 
-        event CompositionHandler CompositionEvent;
+        event CompositionEventHandler CompositionEvent;
 
-        event GetCompExtHandler GetCompExtEvent;
+        event GetCompExtEventHandler GetCompExtEvent;
 
         void Initialize(IntPtr handle, bool isUIElementOnly = false);
 

@@ -7,11 +7,11 @@ namespace ImeSharp
     {
         #region Events
 
-        public event CandidateListHandler CandidateListEvent;
+        public event CandidateListEventHandler CandidateListEvent;
 
-        public event CompositionHandler CompositionEvent;
+        public event CompositionEventHandler CompositionEvent;
 
-        public event GetCompExtHandler GetCompExtEvent;
+        public event GetCompExtEventHandler GetCompExtEvent;
 
         #endregion Events
 

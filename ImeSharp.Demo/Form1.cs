@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define UILess
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -7,118 +9,145 @@ namespace ImeSharp.Demo
     public partial class Form1 : Form
     {
         private IIMEControl iMEControl;
+        private bool uiless = true;
+
+        private String compStr = "";
+        private String storedStr = "";
 
         public Form1()
         {
             InitializeComponent();
-            KeyDown += Form1_KeyDown;
-
-            initAsIMM32();
-            init();
-            //initAsTF();
-            imeModeState.Text = (iMEControl is TF_IMEControl ? "TF" : "IMM32") + "(Click to change)";
+            this.Load += Form1_Load;
         }
 
-        private void initAsTF()
-        {
-            iMEControl = ImeSharp.Get_TFControl();
-        }
-
-        private void initAsIMM32()
+        private void Form1_Load(object sender, EventArgs e)
         {
             iMEControl = ImeSharp.Get_IMM32Control();
+            initIMEControl(uiless);
         }
 
-        private void init()
+        private void initIMEControl(bool UILess)
         {
-            iMEControl.Initialize(Handle, false);
-            iMEControl.EnableIME();
-            iMEControl.CompStrEvent += IMEControl_CompStrEvent;
-            iMEControl.CommitEvent += IMEControl_CommitEvent;
+            if (UILess)
+                iMEControl.Initialize(Handle, true);
+            else
+                iMEControl.Initialize(Handle);
+
+            //Composition
+            iMEControl.CompositionEvent += IMEControl_CompositionEvent;
             iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
-            iMEControl.CandidateListEvent += IMEControl_CandidateListEvent;
-            iMEControl.CompSelEvent += IMEControl_CompSelEvent;
+
+            //CandidateList
+            if (UILess)
+                iMEControl.CandidateListEvent += IMEControl_CandidateListEvent;
+
+            iMEControl.EnableIME();
+            IMEStateChange.Text = "IMEState:" + (iMEControl.isIMEEnabled() ? "Enabled" : "Disabled");
+            IMEAPIData.Text = iMEControl is TF_IMEControl ? "TF API" : "IMM32 API";
+            UILessData.Text = UILess ? "TRUE" : "FALSE";
         }
 
-        private void IMEControl_CompositionEvent(CompositionEventArgs comp)
-        {
-            throw new NotImplementedException();
-        }
+        #region Handle CandidateList
 
         private void IMEControl_CandidateListEvent(CandidateList list)
         {
-            textBoxCandidates.Text = "";
-            foreach (var item in list.Candidates)
+            CandListData.Text = "";
+            foreach (var cand in list.Candidates)
             {
-                textBoxCandidates.Text += item;
-                textBoxCandidates.Text += "\r\n";
+                CandListData.Text += cand;
+                CandListData.Text += "\r\n";
             }
-            textBoxCandidates.Text += string.Format("Count {0} CurSel {1} CurPage {2} PageSize {3}", list.Count, list.CurSel, list.CurPage, list.PageSize);
         }
 
-        private void IMEControl_GetCompExtEvent(ref RECT rect)
+        #endregion Handle CandidateList
+
+        #region Handle Composition
+
+        private void IMEControl_CompositionEvent(CompositionEventArgs comp)
         {
-            Font f = new Font("Microsoft YaHei", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            Size sif2 = TextRenderer.MeasureText(labelComp.Text, f, new Size(0, 0), TextFormatFlags.NoPadding);
+            label_CompCaret.Text = string.Format("Comp CaretPos: {0} ", comp.caretPos);
+
+            storedStr += comp.strCommit;
+            compStr = comp.strComp;
+
+            label_DisplayStr.Text = storedStr + compStr;
+        }
+
+        #endregion Handle Composition
+
+        #region Handle CompExt
+
+        private void IMEControl_GetCompExtEvent(ref global::ImeSharp.RECT rect)
+        {
+            Font f = new Font("Microsoft YaHei", 20F, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
+            Size sif = TextRenderer.MeasureText(storedStr, f, new Size(0, 0), TextFormatFlags.NoPadding);
+            Size sif2 = TextRenderer.MeasureText(compStr, f, new Size(0, 0), TextFormatFlags.NoPadding);
             //Map rect
-            rect.left = labelComp.Location.X;
-            rect.top = labelComp.Location.Y;
+            rect.left = label_DisplayStr.Location.X + sif.Width;
+            rect.top = label_DisplayStr.Location.Y;
             //should use Font height, because some IME draw CompStr themselves, when CompStr is Empty
             //so the candidate window wont cover the text
             rect.bottom = rect.top + f.Height;
             rect.right = rect.left + sif2.Width;
         }
 
-        private void IMEControl_CommitEvent(string commit)
-        {
-            textBoxResult.Text += commit;
-        }
+        #endregion Handle CompExt
 
-        private void IMEControl_CompStrEvent(string comp)
-        {
-            labelComp.Text = comp;
-        }
+        #region Handle WinForm
 
-        private void Application_Idle(object sender, EventArgs e)
-        {
-            FakeDraw();
-        }
-
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Back && textBoxResult.Text.Length > 0)
-                textBoxResult.Text = textBoxResult.Text.Substring(0, textBoxResult.Text.Length - 1);
-        }
-        private void label1_Click(object sender, EventArgs e)
+        private void IMEStateChange_Click(object sender, EventArgs e)
         {
             if (iMEControl.isIMEEnabled())
-            {
                 iMEControl.DisableIME();
-                label1.Text = "IME Disabled";
-            }
             else
-            {
                 iMEControl.EnableIME();
-                label1.Text = "IME Enabled";
-            }
+            IMEStateChange.Text = "IMEState:" + (iMEControl.isIMEEnabled() ? "Enabled" : "Disabled");
         }
 
-        private void imeModeState_Click(object sender, EventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Back:
+                    if (storedStr.Length > 0)
+                        storedStr = storedStr.Remove(storedStr.Length - 1, 1);
+                    this.label_DisplayStr.Text = storedStr + compStr;
+                    return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #endregion Handle WinForm
+
+        private void IMEAPIData_Click(object sender, EventArgs e)
         {
             if (iMEControl is TF_IMEControl)
             {
                 iMEControl.Dispose();
-                initAsIMM32();
+                iMEControl = ImeSharp.Get_IMM32Control();
             }
             else
             {
                 iMEControl.Dispose();
-                initAsTF();
+                iMEControl = ImeSharp.Get_TFControl();
             }
-            init();
-            Hide();
-            Show();//refresh
-            imeModeState.Text = iMEControl is TF_IMEControl ? "TF" : "IMM32";
+            initIMEControl(uiless);
+        }
+
+        private void UILessData_Click(object sender, EventArgs e)
+        {
+            uiless = !uiless;
+            if (iMEControl is TF_IMEControl)
+            {
+                iMEControl.Dispose();
+                iMEControl = ImeSharp.Get_TFControl();
+            }
+            else
+            {
+                iMEControl.Dispose();
+                iMEControl = ImeSharp.Get_IMM32Control();
+            }
+            initIMEControl(uiless);
         }
     }
 }

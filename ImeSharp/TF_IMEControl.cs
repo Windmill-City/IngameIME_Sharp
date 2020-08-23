@@ -7,17 +7,19 @@ namespace ImeSharp
     {
         #region Event
 
-        public event GetCompExtHandler GetCompExtEvent;
+        public event GetCompExtEventHandler GetCompExtEvent;
 
-        public event CandidateListHandler CandidateListEvent;
+        public event CandidateListEventHandler CandidateListEvent;
 
-        public event CompositionHandler CompositionEvent;
+        public event CompositionEventHandler CompositionEvent;
 
         #endregion Event
 
         #region Private
 
         private AppWrapper appWrapper;
+        private CompositionHandler compHandler;
+        private CandidateListWrapper candWrapper;
 
         #endregion Private
 
@@ -27,8 +29,16 @@ namespace ImeSharp
         {
             appWrapper = new AppWrapper();
             appWrapper.Initialize(handle, isUIElementOnly ? ActivateMode.UIELEMENTENABLEDONLY : ActivateMode.DEFAULT);
-
-            appWrapper.eventGetCompExt += onGetCompExt;
+            //handle composition
+            compHandler = appWrapper.GetCompHandler();
+            compHandler.eventComposition += onCompostion;
+            compHandler.eventGetCompExt += onGetCompExt;
+            //handle candidatelist
+            if (isUIElementOnly)
+            {
+                candWrapper = appWrapper.GetCandWapper();
+                candWrapper.eventCandidateList += onCandidateList;
+            }
         }
 
         public bool isIMEEnabled()
@@ -50,6 +60,8 @@ namespace ImeSharp
 
         public void Dispose()
         {
+            if (candWrapper != null)
+                candWrapper.Dispose();
             appWrapper.Dispose();
         }
 
@@ -57,14 +69,25 @@ namespace ImeSharp
 
         #region EventRaiser
 
-        public void onCandidateList(CandidateList list)
+        public void onCandidateList(refCandidateList list)
         {
-            CandidateListEvent?.Invoke(list);
+            CandidateList _list = new CandidateList();
+            _list.CurSel = list.CurSel;
+            _list.Count = list.Count;
+            _list.CurPage = list.CurPage;
+            _list.PageSize = list.PageSize;
+            _list.Candidates = list.Candidates;
+            CandidateListEvent?.Invoke(_list);
         }
 
-        public void onCompostion(CompositionEventArgs comp)
+        public void onCompostion(refCompositionEventArgs comp)
         {
-            CompositionEvent?.Invoke(comp);
+            CompositionEventArgs _comp = new CompositionEventArgs();
+            _comp.caretPos = comp.m_caretPos;
+            _comp.state = (CompositionState)comp.m_state;
+            _comp.strCommit = comp.m_strCommit;
+            _comp.strComp = comp.m_strComp;
+            CompositionEvent?.Invoke(_comp);
         }
 
         public void onGetCompExt(IntPtr rect)
