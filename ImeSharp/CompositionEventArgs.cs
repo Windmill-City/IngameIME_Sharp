@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace ImeSharp
+﻿namespace ImeSharp
 {
     public class CompositionEventArgs
     {
