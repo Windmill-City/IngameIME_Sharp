@@ -32,5 +32,14 @@ namespace ImeSharp
 
             return false;
         }
+
+        public static void PumpMsg(IIMEControl iMEControl)
+        {
+            if (iMEControl is TF_IMEControl)
+            {
+                TF_IMEControl tF_ = iMEControl as TF_IMEControl;
+                tF_.appWrapper.PumpMessage();
+            }
+        }
     }
 }

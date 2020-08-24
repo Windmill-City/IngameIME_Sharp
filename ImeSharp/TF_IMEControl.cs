@@ -17,7 +17,7 @@ namespace ImeSharp
 
         #region Private
 
-        private AppWrapper appWrapper;
+        internal AppWrapper appWrapper;
         private CompositionHandler compHandler;
         private CandidateListWrapper candWrapper;
 
