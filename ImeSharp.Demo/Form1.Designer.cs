@@ -179,7 +179,7 @@
             // 
             this.DrawData.AutoSize = true;
             this.DrawData.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.DrawData.Location = new System.Drawing.Point(512, 31);
+            this.DrawData.Location = new System.Drawing.Point(567, 386);
             this.DrawData.Name = "DrawData";
             this.DrawData.Size = new System.Drawing.Size(54, 22);
             this.DrawData.TabIndex = 12;
