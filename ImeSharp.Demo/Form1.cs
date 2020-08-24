@@ -34,7 +34,7 @@ namespace ImeSharp.Demo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            iMEControl = ImeSharp.GetDefaultControl();//test IMM32 first, or TF API will disable IMM32 API
+            iMEControl = ImeSharp.Get_IMM32Control();//test IMM32 first, or TF API will disable IMM32 API
             initIMEControl(uiless);
         }
 
@@ -145,6 +145,16 @@ namespace ImeSharp.Demo
                 iMEControl = ImeSharp.Get_IMM32Control();
             }
             initIMEControl(uiless);
+        }
+
+        public override bool PreProcessMessage(ref Message msg)
+        {
+            if (msg.Msg == 0x102)//WM_CHAR
+            {
+                storedStr += (char)msg.WParam;
+                label_DisplayStr.Text = storedStr + compStr;
+            }
+            return base.PreProcessMessage(ref msg);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

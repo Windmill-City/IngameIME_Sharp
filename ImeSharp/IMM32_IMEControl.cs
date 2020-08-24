@@ -175,6 +175,7 @@ namespace ImeSharp
         public const int WM_IME_ENDCOMPOSITION = 0x010E;
         public const int WM_IME_COMPOSITION = 0x010F;
         public const int WM_IME_INPUTLANGCHANGE = 0x0051;
+        public const int WM_IME_CHAR = 0x0286;
 
         public const int WM_GETDLGCODE = 0x0087;
 
@@ -247,6 +248,9 @@ namespace ImeSharp
                     onCandidateList(candidate);
                     //if we handle and draw the comp text
                     //we dont pass this msg to the next
+                    goto Handled;
+                case WM_IME_CHAR:
+                    //in case duplicate commit
                     goto Handled;
 
                 case WM_IME_NOTIFY:
