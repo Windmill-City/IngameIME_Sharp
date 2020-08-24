@@ -30,6 +30,7 @@ namespace ImeSharp.Demo
             {
                 DrawData.Text = string.Format("{0}", new Random().Next());
             }
+            ImeSharp.PumpMsg(iMEControl);
         }
 
         private void Form1_Load(object sender, EventArgs e)
