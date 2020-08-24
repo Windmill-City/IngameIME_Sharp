@@ -2,6 +2,7 @@
 
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ImeSharp.Demo
@@ -17,7 +18,20 @@ namespace ImeSharp.Demo
         public Form1()
         {
             InitializeComponent();
-            this.Load += Form1_Load;
+            Load += Form1_Load;
+            Application.Idle += Application_Idle;
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags);
+
+        private void Application_Idle(object sender, EventArgs e)
+        {
+            Message msg;
+            while (!PeekMessage(out msg, IntPtr.Zero, 0, 0, 0))
+            {
+                DrawData.Text = string.Format("{0}", new Random().Next());
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -104,21 +118,6 @@ namespace ImeSharp.Demo
             IMEStateChange.Text = "IMEState:" + (iMEControl.isIMEEnabled() ? "Enabled" : "Disabled");
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            switch (keyData)
-            {
-                case Keys.Back:
-                    if (storedStr.Length > 0)
-                        storedStr = storedStr.Remove(storedStr.Length - 1, 1);
-                    this.label_DisplayStr.Text = storedStr + compStr;
-                    return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        #endregion Handle WinForm
-
         private void IMEAPIData_Click(object sender, EventArgs e)
         {
             if (iMEControl is TF_IMEControl)
@@ -149,5 +148,20 @@ namespace ImeSharp.Demo
             }
             initIMEControl(uiless);
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Back:
+                    if (storedStr.Length > 0)
+                        storedStr = storedStr.Remove(storedStr.Length - 1, 1);
+                    this.label_DisplayStr.Text = storedStr + compStr;
+                    return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #endregion Handle WinForm
     }
 }

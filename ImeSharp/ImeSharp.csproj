@@ -66,10 +66,9 @@
       <Name>libtfWrapper</Name>
     </ProjectReference>
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <Compile Include="IIMEControl.cs" />
     <Compile Include="IMM32_IMEControl.cs" />
-    <Compile Include="Native\msctf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TF_IMEControl.cs" />
   </ItemGroup>

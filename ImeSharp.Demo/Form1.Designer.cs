@@ -41,6 +41,7 @@
             this.Click2Change2 = new System.Windows.Forms.Label();
             this.UILessData = new System.Windows.Forms.Label();
             this.WarningLabel = new System.Windows.Forms.Label();
+            this.DrawData = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // IMEStateChange
@@ -174,11 +175,22 @@
             this.WarningLabel.Text = "Warning! Chaning API and UILess or so in gui may cause bug, it\'s better to restar" +
     "t!";
             // 
+            // DrawData
+            // 
+            this.DrawData.AutoSize = true;
+            this.DrawData.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.DrawData.Location = new System.Drawing.Point(512, 31);
+            this.DrawData.Name = "DrawData";
+            this.DrawData.Size = new System.Drawing.Size(54, 22);
+            this.DrawData.TabIndex = 12;
+            this.DrawData.Text = "0000";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.DrawData);
             this.Controls.Add(this.WarningLabel);
             this.Controls.Add(this.UILessData);
             this.Controls.Add(this.IMEAPIData);
@@ -215,6 +227,7 @@
         private System.Windows.Forms.Label Click2Change2;
         private System.Windows.Forms.Label UILessData;
         private System.Windows.Forms.Label WarningLabel;
+        private System.Windows.Forms.Label DrawData;
     }
 }
 
