@@ -7,7 +7,7 @@ https://discord.gg/BC4GKKr
 # Build
 Set Boost Root before build
 
-Path:`TextServiceFramework\libtf\PropertySheet.props`
+Path:`$(ProjectRoot)\libtf\libtf\PropertySheet.props`
 
 BoostVersion boost_1_74_0
 
