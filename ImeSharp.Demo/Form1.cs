@@ -35,7 +35,8 @@ namespace ImeSharp.Demo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            iMEControl = ImeSharp.Get_IMM32Control();//test IMM32 first, or TF API will disable IMM32 API
+            iMEControl = ImeSharp.Get_TFControl();
+            //iMEControl = ImeSharp.Get_IMM32Control();//test IMM32 first, or TF API will disable IMM32 API
             initIMEControl(uiless);
         }
 
