@@ -8,7 +8,7 @@ namespace ImeSharp.Demo
     public partial class Form1 : Form
     {
         private IIMEControl iMEControl;
-        private bool uiless = false;
+        private bool uiless = true;
 
         private String compStr = "";
         private String storedStr = "";
@@ -35,8 +35,8 @@ namespace ImeSharp.Demo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            iMEControl = ImeSharp.Get_TFControl();
-            //iMEControl = ImeSharp.Get_IMM32Control();//test IMM32 first, or TF API will disable IMM32 API
+            //iMEControl = ImeSharp.Get_TFControl();
+            iMEControl = ImeSharp.Get_IMM32Control();//test IMM32 first, or TF API will disable IMM32 API
             initIMEControl(uiless);
         }
 
