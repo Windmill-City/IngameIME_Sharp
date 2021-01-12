@@ -2,8 +2,6 @@
 A C# wrapper for Windows IME APIs. Its goal is to support both IMM32 and TSF.
 
 Made my own version ImeSharp, using libtf https://github.com/Windmill-City/libtf
-## Discord for Dev
-https://discord.gg/BC4GKKr
 # Build
 Set Boost Root before build
 
