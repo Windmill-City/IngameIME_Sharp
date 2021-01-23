@@ -66,6 +66,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -118,7 +121,16 @@
     <ProjectReference Include="..\IngameIME_Sharp\IngameIME_Sharp.vcxproj">
       <Project>{1764e7d0-ef03-42bd-bdfe-c4bcd059d094}</Project>
       <Name>IngameIME_Sharp</Name>
+      <Aliases>global</Aliases>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(PlatformTarget)==x64 (
+copy $(SolutionDir)x64\$(ConfigurationName)\IngameIME.dll $(TargetDir)IngameIME.dll /y
+)
+if $(PlatformTarget)==x86 (
+copy $(SolutionDir)$(ConfigurationName)\IngameIME.dll $(TargetDir)IngameIME.dll /y
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
