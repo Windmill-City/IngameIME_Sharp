@@ -1,59 +1,36 @@
-# IME Sharp
+# IngameIME_Sharp
 A C# wrapper for Windows IME APIs. Its goal is to support both IMM32 and TSF.
-
-Made my own version ImeSharp, using libtf https://github.com/Windmill-City/libtf
-# Build
-Set Boost Root before build
-
-Path:`$(ProjectRoot)\libtf\libtf\PropertySheet.props`
-
-BoostVersion boost_1_74_0
-
-Download Boost: https://www.boost.org/
-
-Unzip, and copy the boost path to `PropertySheet.props`
+using https://github.com/Windmill-City/IngameIME
 ## Introduction
-### Using ImeSharp
+### Using IngameIME_Sharp
 ```c#
 //get a control first
-//For win7 or below, will get IMM32
-//For Win8 above will get TF
-iMEControl = ImeSharp.GetDefaultControl();
-```
-**or FORCE a control**
-```c#
-iMEControl = ImeSharp.Get_IMM32Control();
-iMEControl = ImeSharp.Get_TFControl();
+//For win7 or below, use IMM
+//For Win8 above should use TSF
+private BaseIME_Sharp api;
+//api = new IMM();
+api = new TSF();
 ```
 *initialize*
 ```c#
-if (UILess)
-    iMEControl.Initialize(Handle, true);//UILess Mode, IME dont draw Candidate Window
-else
-    iMEControl.Initialize(Handle);//Normal mode, IME will draw a Candidate Window
+api.Initialize(Handle);
 //Composition
-//Get Commit Text|Composition Text|Composition Caret
-iMEControl.CompositionEvent += IMEControl_CompositionEvent;
-//IME require this RECT to position its Candidate Window
-iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
+api.m_compositionHandler.eventComposition += M_compositionHandler_eventComposition; ;
+api.m_compositionHandler.eventGetTextExt += M_compositionHandler_eventGetTextExt; ;
 
-//CandidateList, if in UILess Mode, we need to draw CandidateList ourself
+//CandidateList
+api.m_candidateListWrapper.eventCandidateList += M_candidateListWrapper_eventCandidateList;
 
-if (UILess)
-  iMEControl.CandidateListEvent += IMEControl_CandidateListEvent;
+//AlphaMode
+api.eventAlphaMode += Api_eventAlphaMode;
 
+```
+*Set IME State and FullScreen Mode
+```c#
+api.setState(true);
+api.setFullScreen(true);
 ```
 ## MS Docs
 - [TSF Application](https://docs.microsoft.com/en-us/windows/win32/tsf/applications)
 - [TSF UILess Mode](https://docs.microsoft.com/en-us/windows/win32/tsf/uiless-mode-overview)
-- [TSF msctf.h header](https://docs.microsoft.com/en-us/windows/win32/api/msctf/)
-- [IMM32 Use IME in a Game](https://docs.microsoft.com/en-us/windows/win32/dxtecharts/using-an-input-method-editor-in-a-game)
-- [IMM32 imm.h header](https://docs.microsoft.com/en-us/windows/win32/api/imm/)
-## Other samples / implementations
-- [Chromium](https://github.com/chromium/chromium/tree/master/ui/base/ime/win)
-- [Windows Class Samples](https://github.com/microsoft/Windows-classic-samples/blob/master/Samples/IME/cpp/SampleIME)
-- [SDL2](https://github.com/spurious/SDL-mirror/blob/master/src/video/windows/SDL_windowskeyboard.c)
-- [WPF Core](https://github.com/dotnet/wpf/tree/master/src/Microsoft.DotNet.Wpf/src/PresentationCore/System/Windows/Input)
-## Credits
-- [WPF Core](https://github.com/dotnet/wpf)
 
