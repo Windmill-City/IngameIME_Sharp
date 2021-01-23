@@ -2,13 +2,13 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using IngameIME_Sharp;
 
 namespace ImeSharp.Demo
 {
     public partial class Form1 : Form
     {
-        private IIMEControl iMEControl;
-        private bool uiless = true;
+        private BaseIME_Sharp api;
 
         private String compStr = "";
         private String storedStr = "";
@@ -17,53 +17,37 @@ namespace ImeSharp.Demo
         {
             InitializeComponent();
             Load += Form1_Load;
-            Application.Idle += Application_Idle;
-        }
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags);
-
-        private void Application_Idle(object sender, EventArgs e)
-        {
-            Message msg;
-            while (!PeekMessage(out msg, IntPtr.Zero, 0, 0, 0))
-            {
-                DrawData.Text = string.Format("{0}", new Random().Next());
-            }
-            ImeSharp.PumpMsg(iMEControl);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //iMEControl = ImeSharp.Get_TFControl();
-            iMEControl = ImeSharp.Get_IMM32Control();//test IMM32 first, or TF API will disable IMM32 API
-            initIMEControl(uiless);
+            //api = new IMM();
+            api = new TSF();
+            initIMEControl();
         }
 
-        private void initIMEControl(bool UILess)
+        private void initIMEControl()
         {
-            if (UILess)
-                iMEControl.Initialize(Handle, true);
-            else
-                iMEControl.Initialize(Handle);
-
+            api.Initialize(Handle);
             //Composition
-            iMEControl.CompositionEvent += IMEControl_CompositionEvent;
-            iMEControl.GetCompExtEvent += IMEControl_GetCompExtEvent;
+            api.m_compositionHandler.eventComposition += M_compositionHandler_eventComposition; ;
+            api.m_compositionHandler.eventGetTextExt += M_compositionHandler_eventGetTextExt; ;
 
             //CandidateList
-            if (UILess)
-                iMEControl.CandidateListEvent += IMEControl_CandidateListEvent;
+            api.m_candidateListWrapper.eventCandidateList += M_candidateListWrapper_eventCandidateList;
 
-            iMEControl.EnableIME();
-            IMEStateChange.Text = "IMEState:" + (iMEControl.isIMEEnabled() ? "Enabled" : "Disabled");
-            IMEAPIData.Text = iMEControl is TF_IMEControl ? "TF API" : "IMM32 API";
-            UILessData.Text = UILess ? "TRUE" : "FALSE";
+            //AlphaMode
+            api.eventAlphaMode += Api_eventAlphaMode;
+
+            api.setState(true);
+            IMEStateChange.Text = "IMEState:" + (api.State() ? "Enabled" : "Disabled");
+            IMEAPIData.Text = api is TSF ? "TF API" : "IMM32 API";
+            UILessData.Text = api.FullScreen() ? "TRUE" : "FALSE";
         }
 
         #region Handle CandidateList
 
-        private void IMEControl_CandidateListEvent(CandidateList list)
+        private void M_candidateListWrapper_eventCandidateList(refCandidateList list)
         {
             CandListData.Text = "";
             foreach (var cand in list.Candidates)
@@ -77,12 +61,12 @@ namespace ImeSharp.Demo
 
         #region Handle Composition
 
-        private void IMEControl_CompositionEvent(CompositionEventArgs comp)
+        private void M_compositionHandler_eventComposition(refCompositionEventArgs comp)
         {
-            label_CompCaret.Text = string.Format("Comp CaretPos: {0} ", comp.caretPos);
+            label_CompCaret.Text = string.Format("Comp CaretPos: {0} ", comp.m_lCaretPos);
 
-            storedStr += comp.strCommit;
-            compStr = comp.strComp;
+            storedStr += comp.m_strCommit;
+            compStr = comp.m_strComposition;
 
             label_DisplayStr.Text = storedStr + compStr;
         }
@@ -91,7 +75,7 @@ namespace ImeSharp.Demo
 
         #region Handle CompExt
 
-        private void IMEControl_GetCompExtEvent(ref global::ImeSharp.RECT rect)
+        private void M_compositionHandler_eventGetTextExt(refRECT rect)
         {
             Font f = new Font("Microsoft YaHei", 20F, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
             Size sif = TextRenderer.MeasureText(storedStr, f, new Size(0, 0), TextFormatFlags.NoPadding);
@@ -107,46 +91,27 @@ namespace ImeSharp.Demo
 
         #endregion Handle CompExt
 
+        #region Handle AlphaMode
+
+        private void Api_eventAlphaMode(bool alphaMode)
+        {
+            AlphaMode.Text = alphaMode ? "TRUE" : "FALSE";
+        }
+
+        #endregion
+
         #region Handle WinForm
 
         private void IMEStateChange_Click(object sender, EventArgs e)
         {
-            if (iMEControl.isIMEEnabled())
-                iMEControl.DisableIME();
-            else
-                iMEControl.EnableIME();
-            IMEStateChange.Text = "IMEState:" + (iMEControl.isIMEEnabled() ? "Enabled" : "Disabled");
-        }
-
-        private void IMEAPIData_Click(object sender, EventArgs e)
-        {
-            if (iMEControl is TF_IMEControl)
-            {
-                iMEControl.Dispose();
-                iMEControl = ImeSharp.Get_IMM32Control();
-            }
-            else
-            {
-                iMEControl.Dispose();
-                iMEControl = ImeSharp.Get_TFControl();
-            }
-            initIMEControl(uiless);
+            api.setState(!api.State());
+            IMEStateChange.Text = "IMEState:" + (api.State() ? "Enabled" : "Disabled");
         }
 
         private void UILessData_Click(object sender, EventArgs e)
         {
-            uiless = !uiless;
-            if (iMEControl is TF_IMEControl)
-            {
-                iMEControl.Dispose();
-                iMEControl = ImeSharp.Get_TFControl();
-            }
-            else
-            {
-                iMEControl.Dispose();
-                iMEControl = ImeSharp.Get_IMM32Control();
-            }
-            initIMEControl(uiless);
+            api.setFullScreen(!api.FullScreen());
+            UILessData.Text = api.FullScreen() ? "TRUE" : "FALSE";
         }
 
         public override bool PreProcessMessage(ref Message msg)

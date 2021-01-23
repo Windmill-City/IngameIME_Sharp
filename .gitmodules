@@ -1,3 +1,4 @@
-[submodule "libtf"]
-	path = libtf
-	url = https://github.com/Windmill-City/libtf
+
+[submodule "IngameIME"]
+	path = IngameIME
+	url = https://github.com/Windmill-City/IngameIME.git

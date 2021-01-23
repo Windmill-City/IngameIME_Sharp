@@ -36,18 +36,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.IMEAPIName = new System.Windows.Forms.Label();
             this.IMEAPIData = new System.Windows.Forms.Label();
-            this.Click2Change = new System.Windows.Forms.Label();
             this.UILessName = new System.Windows.Forms.Label();
             this.Click2Change2 = new System.Windows.Forms.Label();
             this.UILessData = new System.Windows.Forms.Label();
             this.WarningLabel = new System.Windows.Forms.Label();
             this.DrawData = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.AlphaMode = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // IMEStateChange
             // 
             this.IMEStateChange.AutoSize = true;
-            this.IMEStateChange.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.IMEStateChange.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.IMEStateChange.Location = new System.Drawing.Point(12, 419);
             this.IMEStateChange.Name = "IMEStateChange";
             this.IMEStateChange.Size = new System.Drawing.Size(186, 22);
@@ -58,7 +59,7 @@
             // label_DisplayStr
             // 
             this.label_DisplayStr.AutoSize = true;
-            this.label_DisplayStr.Font = new System.Drawing.Font("Microsoft YaHei", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_DisplayStr.Font = new System.Drawing.Font("微软雅黑", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_DisplayStr.Location = new System.Drawing.Point(12, 9);
             this.label_DisplayStr.Name = "label_DisplayStr";
             this.label_DisplayStr.Size = new System.Drawing.Size(119, 30);
@@ -68,7 +69,7 @@
             // label_CompCaret
             // 
             this.label_CompCaret.AutoSize = true;
-            this.label_CompCaret.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_CompCaret.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_CompCaret.Location = new System.Drawing.Point(567, 419);
             this.label_CompCaret.Name = "label_CompCaret";
             this.label_CompCaret.Size = new System.Drawing.Size(186, 22);
@@ -78,7 +79,7 @@
             // label_CandName
             // 
             this.label_CandName.AutoSize = true;
-            this.label_CandName.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_CandName.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_CandName.Location = new System.Drawing.Point(13, 109);
             this.label_CandName.Name = "label_CandName";
             this.label_CandName.Size = new System.Drawing.Size(164, 22);
@@ -88,7 +89,7 @@
             // CandListData
             // 
             this.CandListData.AutoSize = true;
-            this.CandListData.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.CandListData.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.CandListData.Location = new System.Drawing.Point(15, 144);
             this.CandListData.Name = "CandListData";
             this.CandListData.Size = new System.Drawing.Size(88, 16);
@@ -107,7 +108,7 @@
             // IMEAPIName
             // 
             this.IMEAPIName.AutoSize = true;
-            this.IMEAPIName.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.IMEAPIName.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.IMEAPIName.Location = new System.Drawing.Point(479, 109);
             this.IMEAPIName.Name = "IMEAPIName";
             this.IMEAPIName.Size = new System.Drawing.Size(98, 22);
@@ -117,27 +118,17 @@
             // IMEAPIData
             // 
             this.IMEAPIData.AutoSize = true;
-            this.IMEAPIData.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.IMEAPIData.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.IMEAPIData.Location = new System.Drawing.Point(583, 109);
             this.IMEAPIData.Name = "IMEAPIData";
             this.IMEAPIData.Size = new System.Drawing.Size(87, 22);
             this.IMEAPIData.TabIndex = 9;
             this.IMEAPIData.Text = "Unknown";
-            this.IMEAPIData.Click += new System.EventHandler(this.IMEAPIData_Click);
-            // 
-            // Click2Change
-            // 
-            this.Click2Change.AutoSize = true;
-            this.Click2Change.Location = new System.Drawing.Point(585, 97);
-            this.Click2Change.Name = "Click2Change";
-            this.Click2Change.Size = new System.Drawing.Size(83, 12);
-            this.Click2Change.TabIndex = 7;
-            this.Click2Change.Text = "ClickToChange";
             // 
             // UILessName
             // 
             this.UILessName.AutoSize = true;
-            this.UILessName.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.UILessName.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.UILessName.Location = new System.Drawing.Point(479, 163);
             this.UILessName.Name = "UILessName";
             this.UILessName.Size = new System.Drawing.Size(87, 22);
@@ -156,7 +147,7 @@
             // UILessData
             // 
             this.UILessData.AutoSize = true;
-            this.UILessData.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.UILessData.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.UILessData.Location = new System.Drawing.Point(583, 163);
             this.UILessData.Name = "UILessData";
             this.UILessData.Size = new System.Drawing.Size(87, 22);
@@ -167,29 +158,50 @@
             // WarningLabel
             // 
             this.WarningLabel.AutoSize = true;
-            this.WarningLabel.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.WarningLabel.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.WarningLabel.Location = new System.Drawing.Point(15, 81);
             this.WarningLabel.Name = "WarningLabel";
-            this.WarningLabel.Size = new System.Drawing.Size(672, 16);
+            this.WarningLabel.Size = new System.Drawing.Size(368, 16);
             this.WarningLabel.TabIndex = 11;
-            this.WarningLabel.Text = "Warning! Chaning API and UILess or so in gui may cause bug, it\'s better to restar" +
-    "t!";
+            this.WarningLabel.Text = "To change IMEAPI, you need to change the code";
             // 
             // DrawData
             // 
             this.DrawData.AutoSize = true;
-            this.DrawData.Font = new System.Drawing.Font("SimSun", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.DrawData.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.DrawData.Location = new System.Drawing.Point(567, 386);
             this.DrawData.Name = "DrawData";
             this.DrawData.Size = new System.Drawing.Size(54, 22);
             this.DrawData.TabIndex = 12;
             this.DrawData.Text = "0000";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(446, 208);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(120, 22);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "AlphaMode:";
+            // 
+            // AlphaMode
+            // 
+            this.AlphaMode.AutoSize = true;
+            this.AlphaMode.Font = new System.Drawing.Font("宋体", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.AlphaMode.Location = new System.Drawing.Point(583, 208);
+            this.AlphaMode.Name = "AlphaMode";
+            this.AlphaMode.Size = new System.Drawing.Size(87, 22);
+            this.AlphaMode.TabIndex = 14;
+            this.AlphaMode.Text = "Unknown";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.AlphaMode);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.DrawData);
             this.Controls.Add(this.WarningLabel);
             this.Controls.Add(this.UILessData);
@@ -197,7 +209,6 @@
             this.Controls.Add(this.UILessName);
             this.Controls.Add(this.IMEAPIName);
             this.Controls.Add(this.Click2Change2);
-            this.Controls.Add(this.Click2Change);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.CandListData);
             this.Controls.Add(this.label_CandName);
@@ -222,12 +233,13 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label IMEAPIName;
         private System.Windows.Forms.Label IMEAPIData;
-        private System.Windows.Forms.Label Click2Change;
         private System.Windows.Forms.Label UILessName;
         private System.Windows.Forms.Label Click2Change2;
         private System.Windows.Forms.Label UILessData;
         private System.Windows.Forms.Label WarningLabel;
         private System.Windows.Forms.Label DrawData;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label AlphaMode;
     }
 }
 
